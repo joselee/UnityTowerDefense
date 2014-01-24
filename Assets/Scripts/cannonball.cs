@@ -1,0 +1,27 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class cannonball : MonoBehaviour {
+
+	public float Speed = 500;
+	public float Range = 500;
+
+	private float currentDistance;
+
+	void Start () {
+	}
+	
+	void Update () {
+		// Move the cannonball "Forward" along the Z-axis
+		transform.Translate(Vector3.forward * Time.deltaTime * this.Speed);
+		
+		// Calculate how much distance the cannonball has moved
+		currentDistance += Time.deltaTime * this.Speed;
+
+		// Destroy the cannonball if it has reached its max range
+		if(currentDistance >= this.Range)
+		{
+			Destroy(gameObject);
+		}
+	}
+}
