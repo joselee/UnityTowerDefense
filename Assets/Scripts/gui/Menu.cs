@@ -50,6 +50,10 @@ public class Menu : MonoBehaviour {
 			if (hPlane.Raycast(ray, out distance)){
 				Instantiate(selectedObject,ray.GetPoint(distance), transform.rotation);
 				selectedObject = null;
+
+
+				//Debug.Log(selectedObject.GetComponent<cannon>());
+
 			}
 		}
 	}

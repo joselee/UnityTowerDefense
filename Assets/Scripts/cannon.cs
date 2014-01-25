@@ -14,6 +14,12 @@ public class cannon : MonoBehaviour {
 
 	void Start () {}
 
+
+	public string test()
+	{
+		Debug.Log("test called");
+		return "Moikka";
+	}
 	void Update () {
 		// Enemy is in range.
 		if(enemyTarget)
