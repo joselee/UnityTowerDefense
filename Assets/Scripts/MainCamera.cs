@@ -11,6 +11,9 @@ public class MainCamera : MonoBehaviour {
 
 
 	float currentZoom = 0;
+	float scrollSpeed = 70;
+
+	float cameraZoomSpeed = 20;
 	
 	// Use this for initialization
 	void Start () {
@@ -32,31 +35,21 @@ public class MainCamera : MonoBehaviour {
 			current_position = Input.mousePosition;
 			LeftMouseDrag();        
 		}
-
+		// Zooming
 		if(Input.GetAxis("Mouse ScrollWheel") < 0)
 		{
-			if ( currentZoom < 16 ) {
-				currentZoom++;
-				Vector3 pos = new Vector3(transform.position.x,transform.position.y-currentZoom, transform.position.z);
-				Debug.Log(currentZoom);
+			Vector3 pos = new Vector3(transform.position.x,transform.position.y-cameraZoomSpeed, transform.position.z);
+			if ( pos.y > 100 ) {
 				transform.position = pos;
-			}
+			} 
 		}
-
 		if(Input.GetAxis("Mouse ScrollWheel") > 0)
 		{
-			if ( currentZoom > 0 ) {
-				currentZoom--;
-				Vector3 pos = new Vector3(transform.position.x,transform.position.y+currentZoom, transform.position.z);
-				
+			Vector3 pos = new Vector3(transform.position.x,transform.position.y+cameraZoomSpeed, transform.position.z);
+			if ( pos.y < 300 ) {
 				transform.position = pos;
-			}
+			} 
 		}
-		
-		
-		
-
-
 	}
 	
 	void LeftMouseDrag(){
