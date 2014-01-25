@@ -12,21 +12,21 @@ public class connection : MonoBehaviour {
 	void Start() {
 		try
 		{
-			string socketUrl = "http://10.85.18.93:8090";
-			Debug.Log("socket url: " + socketUrl);
+			//string socketUrl = "http://127.0.0.1:8090";
+			//Debug.Log("socket url: " + socketUrl);
 			
 			
-			this.socket = new Client(socketUrl);
+			//this.socket = new Client(socketUrl);
 			//this.socket.Opened += this.SocketOpened;
 			//this.socket.Message += this.SocketMessage;
 			//this.socket.SocketConnectionClosed += this.SocketConnectionClosed;
 			//this.socket.Error += this.SocketError;
 			
-			this.socket.On("pukka", (data) => {
-				Debug.Log(data.Json.args[0]);
-			});
+			//this.socket.On("pukka", (data) => {
+			//	Debug.Log(data.Json.args[0]);
+			//});
 			
-			this.socket.Connect();
+			//this.socket.Connect();
 		}
 		catch(Exception e)
 		{
@@ -37,10 +37,10 @@ public class connection : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 
 	void OnApplicationQuit () {
-		this.socket.Close();
+		//this.socket.Close();
 	}
 }
