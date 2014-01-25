@@ -35,10 +35,10 @@ public class MainCamera : MonoBehaviour {
 
 		if(Input.GetAxis("Mouse ScrollWheel") < 0)
 		{
-			if ( currentZoom < 25 ) {
+			if ( currentZoom < 16 ) {
 				currentZoom++;
 				Vector3 pos = new Vector3(transform.position.x,transform.position.y-currentZoom, transform.position.z);
-
+				Debug.Log(currentZoom);
 				transform.position = pos;
 			}
 		}
