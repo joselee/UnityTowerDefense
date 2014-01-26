@@ -24,4 +24,13 @@ public class cannonball : MonoBehaviour {
 			Destroy(gameObject);
 		}
 	}
+
+	void OnTriggerEnter(Collider enteringObject)
+	{
+		if(enteringObject.gameObject.tag == "Enemy")
+		{
+			Debug.Log("Cannonball hit enemy target.");
+			Destroy(gameObject);
+		}
+	}
 }

@@ -5,7 +5,6 @@ public class Missile : MonoBehaviour {
 
 	public float Speed;
 	public float Range;
-	//public GameObject ExplosionEffect;
 	public Transform Target;
 
 	
@@ -24,7 +23,6 @@ public class Missile : MonoBehaviour {
 		// Destroy the cannonball if it has reached its max range
 		if(currentDistance >= this.Range)
 		{
-			Debug.Log("Traveled past max range");
 			explode();
 		}
 
@@ -34,26 +32,21 @@ public class Missile : MonoBehaviour {
 		}
 		else 
 		{
-			Debug.Log("Lost target.");
 			explode();
 		}
 	}
 
-	public void OnTriggerEnter(Collider enteringObject)
+	public void OnTriggerStay(Collider enteringObject)
 	{
+		Debug.Log("enemy entered?");
 		if(enteringObject.gameObject.tag == "Air_Enemy")
 		{
-			//In the future, we do damage to the enemy like this:
-			// enteringObject.gameObject.dealDamage(this.DamageAmount);
-
-			Debug.Log("Hit enemy!");
 			explode ();
 		}
 	}
 
 	private void explode()
 	{
-		//Instantiate(this.ExplosionEffect, transform.position, Quaternion.identity);
 		Destroy(gameObject);
 	}
 }
