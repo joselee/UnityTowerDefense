@@ -28,12 +28,14 @@ public class missileLauncher : MonoBehaviour {
 		}
 	}
 	
-	void OnTriggerEnter(Collider enteringObject){
-		// Automatically by Unity when any object enters the current game gameObject's collider.
-		if(enteringObject.gameObject.tag == "Air_Enemy")
+	void OnTriggerStay(Collider enteringObject){
+		if(!enemyTarget)
 		{
-			nextFireTime = Time.time;
-			enemyTarget = enteringObject.gameObject.transform;
+			if(enteringObject.gameObject.tag == "Air_Enemy")
+			{
+				nextFireTime = Time.time;
+				enemyTarget = enteringObject.gameObject.transform;
+			}
 		}
 	}
 	
