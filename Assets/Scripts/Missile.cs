@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Missile : MonoBehaviour {
 
+	public float Damage;
 	public float Speed;
 	public float Range;
 	public Transform Target;
@@ -38,10 +39,10 @@ public class Missile : MonoBehaviour {
 
 	public void OnTriggerStay(Collider enteringObject)
 	{
-		Debug.Log("enemy entered?");
 		if(enteringObject.gameObject.tag == "Air_Enemy")
 		{
 			explode ();
+			enteringObject.gameObject.SendMessage("TakeDamage", Damage);
 		}
 	}
 

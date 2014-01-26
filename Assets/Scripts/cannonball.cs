@@ -29,7 +29,6 @@ public class cannonball : MonoBehaviour {
 	{
 		if(enteringObject.gameObject.tag == "Enemy")
 		{
-			Debug.Log("Cannonball hit enemy target.");
 			Destroy(gameObject);
 		}
 	}
