@@ -5,6 +5,11 @@ public class Menu : MonoBehaviour {
 
 	GameObject selectedObject;
 	string cannonButtonCaption = "Cannon";
+
+
+	public GameObject Cannon;
+	public GameObject AirEnemy;
+	public GameObject MissileLauncher;
 	// Use this for initialization
 	void Start () {
 		
@@ -13,28 +18,34 @@ public class Menu : MonoBehaviour {
 
 	bool cannonButton(string text)
 	{
-		return GUI.Button(new Rect(10,Screen.height - 35,100,25), text);
+		return GUI.Button(new Rect(10,Screen.height - 100,100,100), text);
 	}
 
 	bool missileButton()
 	{
-		return GUI.Button(new Rect(120,Screen.height - 35,120,25), "MissileLauncher");
+		return GUI.Button(new Rect(120,Screen.height - 100,120,100), "MissileLauncher");
 	}
 
 
 	void OnGUI(){
-		GUI.Box (new Rect (0,Screen.height - 45,Screen.width,50), "");
+		GUI.Box (new Rect (0,Screen.height - 100,Screen.width,100), "");
 		// Cannon button
 		if(cannonButton(cannonButtonCaption)) {
 			// Storing the object
-			selectedObject = GameObject.Find("Cannon");
+			selectedObject = Cannon;
 			Debug.Log("Cannong selected");
 		}
 
 		if(missileButton()) {
 			// Storing the object
-			selectedObject = GameObject.Find("MissileLauncher");
+			selectedObject = MissileLauncher;
 			Debug.Log("MissileLauncher selected");
+		}
+
+		if(GUI.Button(new Rect(300,Screen.height - 100,120,100), "Air Enemy")) {
+			// Storing the object
+			selectedObject = AirEnemy;
+			Debug.Log("AirEnemy selected");
 		}
 	}
 

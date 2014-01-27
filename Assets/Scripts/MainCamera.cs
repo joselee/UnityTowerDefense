@@ -81,7 +81,8 @@ public class MainCamera : MonoBehaviour {
 
 
 		if ( position.z > 250.0 && position.z < 545.0 &&  position.x < 674 && position.x > 118){ 
-			transform.position = position;
+			Vector3 newPosition = new Vector3(position.x, 300, position.z);
+			//transform.position = newPosition;
 		}
 	}
 }
