@@ -27,19 +27,17 @@ public class Cannon : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider enteringObject)
+    public void EnemyInRange(Collider enteringObject)
     {
-        // Automatically by Unity when any object enters the current game gameObject's collider.
-        if (enteringObject.gameObject.tag == "Enemy")
+        if (!enemyTarget && enteringObject.gameObject.tag == "Enemy")
         {
             nextFireTime = Time.time;
             enemyTarget = enteringObject.gameObject.transform;
         }
     }
 
-    void OnTriggerExit(Collider exitingObject)
+    public void EnemyLeftRange(Collider exitingObject)
     {
-        // Automatically by Unity when any object leaves the current gameObject's collider.
         if (exitingObject.gameObject.transform == enemyTarget)
         {
             enemyTarget = null;
