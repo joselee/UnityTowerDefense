@@ -8,7 +8,6 @@ public class MissileLauncher : MonoBehaviour
     public GameObject Ammunition;
     public float FireRate = 1f;
     public Transform MissileSpawnPoint;
-    public Transform MissileLauncherBody;
     public Transform MissileLauncherHead;
 
     private Transform enemyTarget;
