@@ -36,8 +36,10 @@ public class CameraZoomPinch : MonoBehaviour
 		if (Physics.Raycast (ray, out hit)) {
 
 			Debug.DrawRay (ray.origin, ray.direction * 1000, Color.yellow);
-			Debug.Log(hit.transform.gameObject.name);
-			
+            if(Input.GetMouseButtonUp(0))
+            {
+                Debug.Log(hit.transform.gameObject.name);
+            }
 		}
 		// Pinch to zoom
 		if (Input.touchCount == 2 && Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(1).phase == TouchPhase.Moved) 

@@ -39,7 +39,6 @@ public class AirEnemy : MonoBehaviour {
 
 	private void explode()
 	{
-		Debug.Log("BOOOOOM!! Air_Enemy is DED!1!");
 		Destroy(gameObject);
 	}
 }
