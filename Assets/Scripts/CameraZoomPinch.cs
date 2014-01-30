@@ -36,7 +36,7 @@ public class CameraZoomPinch : MonoBehaviour
 		if (Physics.Raycast (ray, out hit)) {
 
 			Debug.DrawRay (ray.origin, ray.direction * 1000, Color.yellow);
-			Debug.Log(hit.collider.name);
+			Debug.Log(hit.transform.gameObject.name);
 			
 		}
 		// Pinch to zoom
