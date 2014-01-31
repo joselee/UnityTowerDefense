@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 
 public class CameraZoomPinch : MonoBehaviour 
@@ -29,17 +30,6 @@ public class CameraZoomPinch : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		/*RaycastHit hit;
-		Ray ray = selectedCamera.ScreenPointToRay(Input.mousePosition);
-		
-		if (Physics.Raycast (ray, out hit)) {
-			Debug.DrawRay (ray.origin, ray.direction * 1000, Color.yellow);
-            if(Input.GetMouseButtonUp(0))
-            {
-                Debug.Log(hit.transform.gameObject.name);
-            }
-		}*/
-
 		// Pinch to zoom
 		if (Input.touchCount == 2 && Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(1).phase == TouchPhase.Moved) 
 		{
@@ -109,17 +99,51 @@ public class CameraZoomPinch : MonoBehaviour
 		detectClickedObject(Input.mousePosition);
 	}
 
+	private List<ISelectable> selectedObjects = new List<ISelectable>();	
+	
 	void detectClickedObject(Vector3 pos)
 	{
 		RaycastHit hit;
 		Ray ray = selectedCamera.ScreenPointToRay(Input.mousePosition);
 		
 		if (Physics.Raycast (ray, out hit)) {
-			
-			Debug.DrawRay (ray.origin, ray.direction * 500, Color.yellow);
+
 			if(Input.GetMouseButtonUp(0))
 			{
-				Debug.Log(hit.transform.gameObject.name);
+				GameObject clickedObject = hit.transform.gameObject;
+
+				// Iterate over Selectable components
+				Component[] selectableComponents 
+					= clickedObject.GetComponents(typeof(ISelectable));
+
+				for (int i = 0; i<selectableComponents.Length; i++){
+					// If the class inherits selectable inteface
+					if (selectableComponents[i] is ISelectable){
+						ISelectable selectableObject = selectableComponents[i] as ISelectable;
+
+						ISelectable alreadySelected = null;
+						// call onSelect method
+						// First check if it's there alread
+						// We don't want to select it twice, do we?
+						if ( selectedObjects.Contains(selectableObject) == false) {
+							selectableObject.onSelect();
+							// Adding it to the list of selected object
+							selectedObjects.Add(selectableObject);
+							alreadySelected = selectableObject;
+						} else {
+							alreadySelected = selectableObject;
+						}
+						// In future, we may allow groups to be selected
+						// But for now, let's just reset em all
+						for (int a = 0; a<selectedObjects.Count; a++){
+							ISelectable cSelected = selectedObjects[a];
+							if ( alreadySelected != cSelected){
+								cSelected.onDeselect();
+								selectedObjects.Remove(cSelected);
+							}
+						}
+					}
+				}
 			}
 		}
 	}

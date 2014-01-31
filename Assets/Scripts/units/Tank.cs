@@ -1,8 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tank : MonoBehaviour {
+public class Tank : Building,ISelectable {
 
+	public void onSelect()
+	{
+		Debug.Log("Tank is selected");
+	}
+
+	public void onDeselect()
+	{
+		Debug.Log("Tank is deselected");
+	}
 	// Use this for initialization
 	void Start () {
 	
