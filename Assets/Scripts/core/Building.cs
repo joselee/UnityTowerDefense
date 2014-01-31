@@ -6,7 +6,7 @@ public abstract class Building : MonoBehaviour, ISelectable
 
 	public void onSelect()
 	{
-		Debug.Log("WarFactory is selected");
+		Debug.Log("Building is selected");
 	}
 	
 	public void onDeselect()

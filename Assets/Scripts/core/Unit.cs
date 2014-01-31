@@ -1,7 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Unit : MonoBehaviour {
+public abstract class Unit : MonoBehaviour, ISelectable {
+
+	public void onSelect()
+	{
+		Debug.Log("Unit is selected");
+	}
+	
+	public void onDeselect()
+	{
+		Debug.Log("Unit is deselected");
+	}
 
 	// Use this for initialization
 	void Start () {
