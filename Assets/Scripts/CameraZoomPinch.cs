@@ -5,10 +5,10 @@ using System.Collections;
 public class CameraZoomPinch : MonoBehaviour 
 {
 	public int speed = 1;
-	public Camera selectedCamera;
 	public float MINSCALE = 2.0F;
 	public float MAXSCALE = 5.0F;
 	public float varianceInDistances = 5.0F;
+	private Camera selectedCamera;
 	private float touchDelta = 0.0F;
 	private Vector2 prevDist = new Vector2(0,0);
 	private Vector2 curDist = new Vector2(0,0);
@@ -23,24 +23,23 @@ public class CameraZoomPinch : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		
+		selectedCamera = Camera.main;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		RaycastHit hit;
-		
+		/*RaycastHit hit;
 		Ray ray = selectedCamera.ScreenPointToRay(Input.mousePosition);
 		
 		if (Physics.Raycast (ray, out hit)) {
-
 			Debug.DrawRay (ray.origin, ray.direction * 1000, Color.yellow);
             if(Input.GetMouseButtonUp(0))
             {
                 Debug.Log(hit.transform.gameObject.name);
             }
-		}
+		}*/
+
 		// Pinch to zoom
 		if (Input.touchCount == 2 && Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(1).phase == TouchPhase.Moved) 
 		{
@@ -102,36 +101,26 @@ public class CameraZoomPinch : MonoBehaviour
 					
 					Vector3 newPosition = new Vector3(position.x, 300, position.z);
 					selectedCamera.transform.position = newPosition;
-
-					// Detect wich object is clicked
-					detectClickedObject(Input.mousePosition);
-
 				}
 			}
-			//Input.GetTouch(0).position.x
 		}
+
+		// Detect wich object is clicked
+		detectClickedObject(Input.mousePosition);
 	}
 
 	void detectClickedObject(Vector3 pos)
 	{
+		RaycastHit hit;
+		Ray ray = selectedCamera.ScreenPointToRay(Input.mousePosition);
+		
+		if (Physics.Raycast (ray, out hit)) {
 			
-			RaycastHit hit;
-			
-			Ray ray = selectedCamera.ScreenPointToRay(pos);
-			
-			if (Physics.Raycast (ray, out hit)) {
+			Debug.DrawRay (ray.origin, ray.direction * 500, Color.yellow);
+			if(Input.GetMouseButtonUp(0))
+			{
 				Debug.Log(hit.transform.gameObject.name);
-				//Debug.DrawRay (ray.origin, ray.direction * 99999, Color.yellow);
-
 			}
-			/*
-			Plane hPlane = new Plane(Vector3.up, Vector3.zero);
-
-
-			float distance = 0; 
-			if (hPlane.Raycast(ray, out distance)){
-				Vector3 hitPoint = ray.GetPoint(distance);
-
-			}*/
+		}
 	}
 }
