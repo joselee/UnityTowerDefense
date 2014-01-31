@@ -110,40 +110,7 @@ public class CameraZoomPinch : MonoBehaviour
 
 			if(Input.GetMouseButtonUp(0))
 			{
-				GameObject clickedObject = hit.transform.gameObject;
-
-				// Iterate over Selectable components
-				Component[] selectableComponents 
-					= clickedObject.GetComponents(typeof(ISelectable));
-
-				for (int i = 0; i<selectableComponents.Length; i++){
-					// If the class inherits selectable inteface
-					if (selectableComponents[i] is ISelectable){
-						ISelectable selectableObject = selectableComponents[i] as ISelectable;
-
-						ISelectable alreadySelected = null;
-						// call onSelect method
-						// First check if it's there alread
-						// We don't want to select it twice, do we?
-						if ( selectedObjects.Contains(selectableObject) == false) {
-							selectableObject.onSelect();
-							// Adding it to the list of selected object
-							selectedObjects.Add(selectableObject);
-							alreadySelected = selectableObject;
-						} else {
-							alreadySelected = selectableObject;
-						}
-						// In future, we may allow groups to be selected
-						// But for now, let's just reset em all
-						for (int a = 0; a<selectedObjects.Count; a++){
-							ISelectable cSelected = selectedObjects[a];
-							if ( alreadySelected != cSelected){
-								cSelected.onDeselect();
-								selectedObjects.Remove(cSelected);
-							}
-						}
-					}
-				}
+				SelectGameObject.dispatch(hit.transform.gameObject);
 			}
 		}
 	}
