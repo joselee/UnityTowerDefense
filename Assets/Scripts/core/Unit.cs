@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class Unit : SelectableGameObject {
+public abstract class Unit : MonoBehaviour, ISelectable {
 
 	void Start () {
 	
@@ -11,16 +11,13 @@ public abstract class Unit : SelectableGameObject {
 	
 	}
 
-	public override void OnSelect()
+	public void OnSelect()
 	{
-		// First run the original OnSelect, which happens for all selectable objects.
-		base.OnSelect ();
-		
-		// Here, we can add Unit specific OnSelect code.
+		SelectGameObject.HighlightObject (gameObject);
 	}
 	
-	public override void OnDeselect()
+	public void OnDeselect()
 	{
-		base.OnDeselect ();
+		SelectGameObject.UnHightlightObject (gameObject);
 	}
 }

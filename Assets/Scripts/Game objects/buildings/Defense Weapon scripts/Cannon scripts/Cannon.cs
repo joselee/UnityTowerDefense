@@ -56,14 +56,4 @@ public class Cannon : Building
             Instantiate(MuzzleFlash, barrel.position, CannonBody.rotation);
         }
     }
-
-	public override void OnSelect()
-	{
-		base.OnSelect ();
-	}
-	
-	public override void OnDeselect()
-	{
-		base.OnDeselect ();
-	}
 }

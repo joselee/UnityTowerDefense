@@ -10,14 +10,4 @@ public class Tank : Unit {
 	void Update () {
 	
 	}
-
-	public override void OnSelect()
-	{
-		base.OnSelect ();
-	}
-	
-	public override void OnDeselect()
-	{
-		base.OnDeselect ();
-	}
 }
