@@ -8,6 +8,15 @@ public class SelectGameObject {
 	private static List<ISelectable> selected
 		= new List<ISelectable>();	
 
+	// Deselect all object
+	public static void DeselectAll()
+	{
+		for (int a = 0; a<selected.Count; a++){
+			ISelectable cSelected = selected[a];
+			cSelected.OnDeselect();
+			selected.Remove(cSelected);
+		}
+	}
 	public static void Dispatch(GameObject target)
 	{
 

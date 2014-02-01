@@ -99,7 +99,7 @@ public class CameraZoomPinch : MonoBehaviour
 		}
 
 		// Detect wich object is clicked
-		detectClickedObject(Input.mousePosition);
+		selectAndDrag(Input.mousePosition);
 	}
 
 
@@ -107,10 +107,11 @@ public class CameraZoomPinch : MonoBehaviour
 	private Vector3 latestDragCameraPosition;
 	private Vector3 latestSelectCameraPosition;
 	private bool draggingOccured = false;
+	private Vector3 terrainPointed;
 	
-	void detectClickedObject(Vector3 pos)
+	void selectAndDrag(Vector3 pos)
 	{
-		Vector3 pointerPosition = Input.mousePosition;
+		Vector3 pointerPosition = pos;
 		bool userFingerUp = Input.GetMouseButtonUp(0);
 		bool userFingerDown = Input.GetMouseButtonDown(0);
 
@@ -121,6 +122,12 @@ public class CameraZoomPinch : MonoBehaviour
 
 			if(userFingerUp)
 			{
+				// Deselect all objects
+				if ( hit.transform.gameObject.name == "Terrain" ){
+					if ( terrainPointed == pointerPosition ){
+						SelectGameObject.DeselectAll();
+					}
+				}
 				// If we have not move a screen
 				if (latestSelectCameraPosition == pointerPosition){
 					SelectGameObject.Dispatch(hit.transform.gameObject);
@@ -136,6 +143,9 @@ public class CameraZoomPinch : MonoBehaviour
 			}
 			if(userFingerDown)
 			{
+				if ( hit.transform.gameObject.name == "Terrain" ){
+					terrainPointed = pointerPosition;
+				}
 				latestSelectCameraPosition = pointerPosition;
 				draggableComponent = DragGameObject.GetDraggable(hit.transform.gameObject);
 				if (draggableComponent != null) {
