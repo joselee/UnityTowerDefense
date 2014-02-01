@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class Building : MonoBehaviour, ISelectable
+public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 {
-    void Start()
+	private bool unitSelected = false;
+	void Start()
     {
     }
 
@@ -12,13 +13,31 @@ public abstract class Building : MonoBehaviour, ISelectable
 
     }
 
+	public bool OnDragMove(Vector3 position)
+	{
+		if (unitSelected) {
+			Debug.Log("Draggin x:" + position.x + ", position z : " + position.z);
+			return true;
+		}
+		return false;
+	}
+
+	public void OnDragStop()
+	{
+		Debug.Log("Draggin stop");
+		OnDeselect();
+	}
+
 	public void OnSelect()
 	{
+
 		SelectGameObject.HighlightObject (gameObject);
+		unitSelected = true;
 	}
 	
 	public void OnDeselect()
 	{
 		SelectGameObject.UnHightlightObject (gameObject);
+		unitSelected = false;
 	}
 }

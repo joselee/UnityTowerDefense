@@ -20,6 +20,9 @@ public class CameraZoomPinch : MonoBehaviour
 	Vector3 hit_position = Vector3.zero;
 	Vector3 current_position = Vector3.zero;
 	Vector3 camera_position = Vector3.zero;
+
+
+	private bool lockCameraMovement = false;
 	
 	// Use this for initialization
 	void Start () 
@@ -63,9 +66,9 @@ public class CameraZoomPinch : MonoBehaviour
 			
 			bool getMouseGesture = ( Input.GetMouseButton(0) || Input.GetMouseButtonDown(0) ) && Input.touchCount == 0;
 			
-			
+
 			// Moving camera
-			if (Input.touchCount == 1 || getMouseGesture) {
+			if (Input.touchCount == 1 || getMouseGesture && lockCameraMovement == false) {
 				if ( Input.GetMouseButtonDown(0) || (Input.touchCount == 1 &&Input.GetTouch(0).phase == TouchPhase.Began) ) {
 					if ( getMouseGesture ) {
 						hit_position =  Input.mousePosition;
@@ -99,19 +102,59 @@ public class CameraZoomPinch : MonoBehaviour
 		detectClickedObject(Input.mousePosition);
 	}
 
-	private List<ISelectable> selectedObjects = new List<ISelectable>();	
+
+	private IDraggable draggableComponent = null;
+	private Vector3 latestDragCameraPosition;
+	private Vector3 latestSelectCameraPosition;
+	private bool draggingOccured = false;
 	
 	void detectClickedObject(Vector3 pos)
 	{
+		Vector3 pointerPosition = Input.mousePosition;
+		bool userFingerUp = Input.GetMouseButtonUp(0);
+		bool userFingerDown = Input.GetMouseButtonDown(0);
+
 		RaycastHit hit;
-		Ray ray = selectedCamera.ScreenPointToRay(Input.mousePosition);
+		Ray ray = selectedCamera.ScreenPointToRay(pointerPosition);
 		
 		if (Physics.Raycast (ray, out hit)) {
-			Debug.DrawRay(ray.origin, ray.direction * 500, Color.yellow);
-			if(Input.GetMouseButtonUp(0))
+
+			if(userFingerUp)
 			{
-				SelectGameObject.Dispatch(hit.transform.gameObject);
+				// If we have not move a screen
+				if (latestSelectCameraPosition == pointerPosition){
+					SelectGameObject.Dispatch(hit.transform.gameObject);
+				}
+
+				lockCameraMovement = false;
+				if (draggableComponent != null && draggingOccured){
+					DragGameObject.DispatchDragStop(draggableComponent);
+					draggingOccured = false;
+				}
+				draggableComponent = null;
+
 			}
+			if(userFingerDown)
+			{
+				latestSelectCameraPosition = pointerPosition;
+				draggableComponent = DragGameObject.GetDraggable(hit.transform.gameObject);
+				if (draggableComponent != null) {
+					lockCameraMovement = true;
+				} else {
+					lockCameraMovement = false;
+				}
+			} 
 		}
+
+		if ( draggableComponent != null ) {
+			if ( latestDragCameraPosition != pointerPosition){
+				lockCameraMovement = DragGameObject.DispatchDrag(draggableComponent, pointerPosition);
+				draggingOccured = lockCameraMovement;
+			}
+		} else {
+			lockCameraMovement = false; 
+		}
+		latestDragCameraPosition = pointerPosition;
+
 	}
 }
