@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 
-public class MissileLauncher : MonoBehaviour
+public class MissileLauncher : Building
 {
 
     public GameObject Ammunition;
@@ -62,4 +62,14 @@ public class MissileLauncher : MonoBehaviour
         Missile missile = (Missile)missileObject.GetComponent<Missile>();
         missile.Target = this.enemyTarget;
     }
+
+	public override void OnSelect()
+	{
+		base.OnSelect ();
+	}
+	
+	public override void OnDeselect()
+	{
+		base.OnDeselect ();
+	}
 }

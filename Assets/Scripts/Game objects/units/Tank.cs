@@ -3,14 +3,21 @@ using System.Collections;
 
 public class Tank : Unit {
 
-
-	// Use this for initialization
 	void Start () {
 	
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
+	}
+
+	public override void OnSelect()
+	{
+		base.OnSelect ();
+	}
+	
+	public override void OnDeselect()
+	{
+		base.OnDeselect ();
 	}
 }

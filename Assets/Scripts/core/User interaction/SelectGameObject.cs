@@ -8,7 +8,7 @@ public class SelectGameObject {
 	private static List<ISelectable> selected
 		= new List<ISelectable>();	
 
-	public static void dispatch(GameObject target)
+	public static void Dispatch(GameObject target)
 	{
 
 		// Iterate over Selectable components
@@ -21,11 +21,11 @@ public class SelectGameObject {
 				ISelectable selectableObject = selectableComponents[i] as ISelectable;
 				
 				ISelectable alreadySelected = null;
-				// call onSelect method
+				// call OnSelect method
 				// First check if it's there alread
 				// We don't want to select it twice, do we?
 				if ( selected.Contains(selectableObject) == false) {
-					selectableObject.onSelect();
+					selectableObject.OnSelect();
 					// Adding it to the list of selected object
 					selected.Add(selectableObject);
 					alreadySelected = selectableObject;
@@ -37,7 +37,7 @@ public class SelectGameObject {
 				for (int a = 0; a<selected.Count; a++){
 					ISelectable cSelected = selected[a];
 					if ( alreadySelected != cSelected){
-						cSelected.onDeselect();
+						cSelected.OnDeselect();
 						selected.Remove(cSelected);
 					}
 				}

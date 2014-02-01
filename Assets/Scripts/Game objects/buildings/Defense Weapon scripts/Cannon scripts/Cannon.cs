@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Cannon : MonoBehaviour
+public class Cannon : Building
 {
     public GameObject Ammunition;
     public GameObject MuzzleFlash;
@@ -56,4 +56,14 @@ public class Cannon : MonoBehaviour
             Instantiate(MuzzleFlash, barrel.position, CannonBody.rotation);
         }
     }
+
+	public override void OnSelect()
+	{
+		base.OnSelect ();
+	}
+	
+	public override void OnDeselect()
+	{
+		base.OnDeselect ();
+	}
 }

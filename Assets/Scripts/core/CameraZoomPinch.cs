@@ -107,10 +107,10 @@ public class CameraZoomPinch : MonoBehaviour
 		Ray ray = selectedCamera.ScreenPointToRay(Input.mousePosition);
 		
 		if (Physics.Raycast (ray, out hit)) {
-
+			Debug.DrawRay(ray.origin, ray.direction * 500, Color.yellow);
 			if(Input.GetMouseButtonUp(0))
 			{
-				SelectGameObject.dispatch(hit.transform.gameObject);
+				SelectGameObject.Dispatch(hit.transform.gameObject);
 			}
 		}
 	}
