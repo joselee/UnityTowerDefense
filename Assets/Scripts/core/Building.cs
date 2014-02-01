@@ -4,6 +4,7 @@ using System.Collections;
 public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 {
 	private bool unitSelected = false;
+
 	void Start()
     {
     }
@@ -13,28 +14,29 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 
     }
 
+
+	// Dragging
 	public bool OnDragMove(Vector3 position)
 	{
 		if (unitSelected) {
-			Debug.Log("Draggin x:" + position.x + ", position z : " + position.z);
+			transform.position = position;
 			return true;
 		}
 		return false;
 	}
-
+	// Dragging stopped
 	public void OnDragStop()
 	{
 		Debug.Log("Draggin stop");
-		OnDeselect();
 	}
-
+	// Selecting unit
 	public void OnSelect()
 	{
 
 		SelectGameObject.HighlightObject (gameObject);
 		unitSelected = true;
 	}
-	
+	// Deselecting unit
 	public void OnDeselect()
 	{
 		SelectGameObject.UnHightlightObject (gameObject);
