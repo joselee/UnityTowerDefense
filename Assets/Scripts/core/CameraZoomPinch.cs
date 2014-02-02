@@ -88,12 +88,14 @@ public class CameraZoomPinch : MonoBehaviour
 					current_position.z = hit_position.z = camera_position.y;
 					Vector3 direction = selectedCamera.ScreenToWorldPoint(current_position) - selectedCamera.ScreenToWorldPoint(hit_position);
 					direction = direction * -1;
+					//Debug.Log("currect:" + direction.x + ":" + direction.z);
 					
 					Vector3 position = camera_position + direction;
-					Vector3 bottomLeft = selectedCamera.ScreenToWorldPoint(new Vector3(0.0f, 0.0f, -selectedCamera.transform.position.z));
+
+					float speed = 5;
 					
-					Vector3 newPosition = new Vector3(position.x, 300, position.z);
-					selectedCamera.transform.position = newPosition;
+					Vector3 newPosition = new Vector3(position.x + 10 * Time.deltaTime, 300, position.z +10* Time.deltaTime);
+					//selectedCamera.transform.position = newPosition;
 				}
 			}
 		}
