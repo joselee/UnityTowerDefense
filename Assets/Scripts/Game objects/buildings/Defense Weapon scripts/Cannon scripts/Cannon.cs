@@ -46,7 +46,7 @@ public class Cannon : Building
 
     void FireCannon()
     {
-        audio.Play();
+        //audio.Play();
         nextFireTime = Time.time + FireRate;
 
         foreach (Transform barrel in BarrelArray)
