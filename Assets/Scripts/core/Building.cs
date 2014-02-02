@@ -5,7 +5,7 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 {
 	private bool unitSelected = false;
 	private Vector3 lastValidPosition;
-	private bool currentPositionValid;
+	private bool currentPositionValid = true;
 
 	void Start()
     {
