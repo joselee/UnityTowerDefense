@@ -15,6 +15,9 @@ public class PlacementCollider : MonoBehaviour
 			if (selectableComponent.IsSelected) {
 				Material redIndicator = Resources.Load ("SelectedIndicator_Material_Red", typeof(Material)) as Material;
 				parent.FindChild ("SelectedIndicator").gameObject.renderer.material = redIndicator;
+
+				IDraggable draggableComponent = parent.gameObject.GetComponent (typeof(IDraggable)) as IDraggable;
+				draggableComponent.CurrentPositionValid = false;
 			}
 		}
 	}
@@ -29,6 +32,9 @@ public class PlacementCollider : MonoBehaviour
 			if (selectableComponent.IsSelected) {
 				Material greenIndicator = Resources.Load ("SelectedIndicator_Material", typeof(Material)) as Material;
 				parent.FindChild ("SelectedIndicator").gameObject.renderer.material = greenIndicator;
+
+				IDraggable draggableComponent = parent.gameObject.GetComponent (typeof(IDraggable)) as IDraggable;
+				draggableComponent.CurrentPositionValid = true;
 			}
 		}
 	}

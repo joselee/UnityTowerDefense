@@ -4,9 +4,12 @@ using System.Collections;
 public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 {
 	private bool unitSelected = false;
+	private Vector3 lastValidPosition;
+	private bool currentPositionValid;
 
 	void Start()
     {
+		lastValidPosition = gameObject.transform.position;
     }
 
     void Update()
@@ -27,6 +30,14 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	// Dragging stopped
 	public void OnDragStop()
 	{
+		if(!currentPositionValid)
+		{
+			gameObject.transform.position = lastValidPosition;
+		}
+		else
+		{
+			lastValidPosition = gameObject.transform.position;
+		}
 	}
 	// Selecting unit
 	public void OnSelect()
@@ -46,5 +57,11 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	{
 		get{return unitSelected;}
 		set{unitSelected = value;}
+	}
+
+	public bool CurrentPositionValid 
+	{
+		get{return currentPositionValid;}
+		set{currentPositionValid = value;}
 	}
 }
