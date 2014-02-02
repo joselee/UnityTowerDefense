@@ -3,7 +3,7 @@ using System.Collections;
 
 public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 {
-	private bool unitSelected = false;
+	public bool UnitSelected = false;
 
 	void Start()
     {
@@ -18,7 +18,7 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	// Dragging
 	public bool OnDragMove(Vector3 position)
 	{
-		if (unitSelected) {
+		if (UnitSelected) {
 			transform.position = position;
 			return true;
 		}
@@ -27,19 +27,18 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	// Dragging stopped
 	public void OnDragStop()
 	{
-		Debug.Log("Draggin stop");
 	}
 	// Selecting unit
 	public void OnSelect()
 	{
 
 		SelectGameObject.HighlightObject (gameObject);
-		unitSelected = true;
+		UnitSelected = true;
 	}
 	// Deselecting unit
 	public void OnDeselect()
 	{
 		SelectGameObject.UnHightlightObject (gameObject);
-		unitSelected = false;
+		UnitSelected = false;
 	}
 }
