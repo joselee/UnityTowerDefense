@@ -18,7 +18,11 @@ public class UserInput : MonoBehaviour {
 		Vector3 pointerPosition = Input.mousePosition;
 
 		// Move the camera
-		moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
+		if ( lockCameraMovement == false ){
+			moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
+		}
+
+		selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
 	}
 
 
@@ -29,6 +33,7 @@ public class UserInput : MonoBehaviour {
 	private Vector3 cameraStartPosition = Vector3.zero;
 	private Vector3 cameraMovePosition;
 	private Vector3 latestDirection;
+
 	private bool stopCameraAnimation = false;
 
 
@@ -87,8 +92,8 @@ public class UserInput : MonoBehaviour {
 				double dt = lastCoord.getTicks() - prevCoord.getTicks();
 				speedX = Math.Round(dx/dt,3) / 3;
 				speedZ = Math.Round(dz/dt,3) / 3;
+				// Reset coord list
 				userFingerMoveHistory = new List<FingerDestination>();
-				//Debug.Log(dt/1000);
 			}
 
 			Vector3 curPos = Camera.main.transform.position;
@@ -97,12 +102,13 @@ public class UserInput : MonoBehaviour {
 			float shiftX = curPos.x;
 			float shiftZ = curPos.z;
 
-			Debug.Log(speedZ + ":" + speedX);
+
 			shiftZ += (float)speedZ;
 			shiftX += (float)speedX; 
 
 
 			animationDistance = new Vector3(shiftX, 300,shiftZ);
+			cameraStartPosition = Camera.main.transform.position - animationDistance;
 			StartCoroutine(SmoothCameraMoveOnTouchEnd());
 		}
 	}
@@ -120,29 +126,20 @@ public class UserInput : MonoBehaviour {
 		public FingerDestination(Vector3 pos)
 		{
 			this.pos = pos;
-			this.time = UnixTimeStampToDateTime();
+			this.time = (DateTime.Now - new DateTime(1970, 1, 1).ToLocalTime()).TotalSeconds;
 		}
-
-		private double UnixTimeStampToDateTime( )
-		{
-			return (DateTime.Now - new DateTime(1970, 1, 1).ToLocalTime()).TotalSeconds;
-		}
-
 		public float getX()
 		{
 			return pos.x;
 		}
-
 		public float getZ()
 		{
 			return pos.z;
 		}
-
 		public double getTicks()
 		{
 			return time;
 		}
-	
 	}
 
 
@@ -151,14 +148,88 @@ public class UserInput : MonoBehaviour {
 	private Vector3 animationDistance;
 	IEnumerator SmoothCameraMoveOnTouchEnd()
 	{
-		float t = 0.0f;
+		float t = 0.1f;
+
+		Vector3 distance = Camera.main.transform.position - animationDistance;
 		Vector3 startingPos = Camera.main.transform.position;
-		while (t < 1.0f && stopCameraAnimation == false)
+		/*
+		float speedX = distance.x / cameraStartPosition.x;
+		float speedY = distance.x / cameraStartPosition.x;
+		float commonSpeed = speedX + speedY;*/
+	
+		while (t < 1f && stopCameraAnimation == false)
 		{
-			t += Time.deltaTime * (Time.timeScale/transitionDuration);
-			
+
+
+			t += Time.deltaTime * 1f;//(Time.timeScale/transitionDuration);
+
 			transform.position = Vector3.Lerp(startingPos,animationDistance, t);
 			yield return 0;
 		}
 	}
+
+
+	private bool lockCameraMovement = false;
+	private IDraggable draggableComponent = null;
+	private Vector3 latestDragCameraPosition;
+	private Vector3 latestSelectCameraPosition;
+	private bool draggingOccured = false;
+	private Vector3 terrainPointed;
+	
+	void selectAndDrag(Vector3 pointerPosition, bool userFingerUp, bool userFingerDown)
+	{
+
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(pointerPosition);
+		
+		if (Physics.Raycast (ray, out hit)) {
+
+			if(userFingerUp)
+			{
+				// Deselect all objects
+				if ( hit.transform.gameObject.name == "Terrain" ){
+					if ( terrainPointed == pointerPosition ){
+						SelectGameObject.DeselectAll();
+					}
+				}
+				// If we have not move a screen
+				if (latestSelectCameraPosition == pointerPosition){
+					SelectGameObject.Dispatch(hit.transform.gameObject);
+				}
+
+				lockCameraMovement = false;
+				if (draggableComponent != null && draggingOccured){
+					DragGameObject.DispatchDragStop(draggableComponent);
+					draggingOccured = false;
+				}
+				draggableComponent = null;
+
+			}
+			if(userFingerDown)
+			{
+				if ( hit.transform.gameObject.name == "Terrain" ){
+					terrainPointed = pointerPosition;
+				}
+				latestSelectCameraPosition = pointerPosition;
+				draggableComponent = DragGameObject.GetDraggable(hit.transform.gameObject);
+				if (draggableComponent != null) {
+					lockCameraMovement = true;
+				} else {
+					lockCameraMovement = false;
+				}
+			} 
+		}
+
+		if ( draggableComponent != null ) {
+			if ( latestDragCameraPosition != pointerPosition){
+				lockCameraMovement = DragGameObject.DispatchDrag(draggableComponent, pointerPosition);
+				draggingOccured = lockCameraMovement;
+			}
+		} else {
+			lockCameraMovement = false; 
+		}
+		latestDragCameraPosition = pointerPosition;
+
+	}
+
 }
