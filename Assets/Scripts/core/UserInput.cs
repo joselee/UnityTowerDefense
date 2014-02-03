@@ -5,6 +5,16 @@ using System;
 
 public class UserInput : MonoBehaviour {
 
+
+	private bool lockCameraMovement = false;
+	private Vector3 hitPosition = Vector3.zero;
+	private Vector3 cameraStartPosition = Vector3.zero;
+	private Vector3 cameraMovePosition;
+	private Vector3 latestDirection;
+	private bool stopCameraAnimation = false;
+	public float CameraSpeed = 1f;
+
+
 	// Use this for initialization
 	void Start () {
 	
@@ -29,12 +39,6 @@ public class UserInput : MonoBehaviour {
 
 
 
-	private Vector3 hitPosition = Vector3.zero;
-	private Vector3 cameraStartPosition = Vector3.zero;
-	private Vector3 cameraMovePosition;
-	private Vector3 latestDirection;
-
-	private bool stopCameraAnimation = false;
 
 
 
@@ -161,7 +165,7 @@ public class UserInput : MonoBehaviour {
 		{
 
 
-			t += Time.deltaTime * 1f;//(Time.timeScale/transitionDuration);
+			t += Time.deltaTime * CameraSpeed;//(Time.timeScale/transitionDuration);
 
 			transform.position = Vector3.Lerp(startingPos,animationDistance, t);
 			yield return 0;
@@ -169,7 +173,7 @@ public class UserInput : MonoBehaviour {
 	}
 
 
-	private bool lockCameraMovement = false;
+
 	private IDraggable draggableComponent = null;
 	private Vector3 latestDragCameraPosition;
 	private Vector3 latestSelectCameraPosition;
