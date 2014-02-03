@@ -10,9 +10,15 @@ public class Menu : MonoBehaviour {
 	public GameObject Cannon;
 	public GameObject AirEnemy;
 	public GameObject MissileLauncher;
+
+	public GUISkin skin;
+
+	private Texture2D testButton;
+	private Rect niceButtonRect = new Rect (50, Screen.height - 100, 50,50);
+
 	// Use this for initialization
 	void Start () {
-		
+
 	}
 
 
@@ -28,8 +34,21 @@ public class Menu : MonoBehaviour {
 
 
 	void OnGUI(){
+		GUI.skin = skin;
+		testButton = (Texture2D) Resources.Load("people", typeof(Texture2D));
+
+		if ( GUI.Button (niceButtonRect, testButton) ) {
+			Debug.Log("OLOLO");
+		}
+
+
+		//	Debug.Log("Clicked");
+		//}
+
+		/*
+
 		GUI.Box (new Rect (0,Screen.height - 100,Screen.width,100), "");
-		// Cannon button
+
 		if(cannonButton(cannonButtonCaption)) {
 			// Storing the object
 			selectedObject = Cannon;
@@ -37,20 +56,26 @@ public class Menu : MonoBehaviour {
 		}
 
 		if(missileButton()) {
-			// Storing the object
+		
 			selectedObject = MissileLauncher;
 			Debug.Log("MissileLauncher selected");
 		}
 
 		if(GUI.Button(new Rect(300,Screen.height - 100,120,100), "Air Enemy")) {
-			// Storing the object
+		
 			selectedObject = AirEnemy;
 			Debug.Log("AirEnemy selected");
-		}
+		}*/
 	}
 
 	// Update is called once per frame
 	void Update () {
+		Rect a = new Rect (0, 0, 150, 150);
+		if (niceButtonRect.Contains(Input.mousePosition)) {
+			
+			Debug.Log("Clicked");
+			
+		}
 
 		if(Input.GetMouseButtonDown(0) && selectedObject){
 			RaycastHit hit;
