@@ -13,11 +13,12 @@ public class UserInput : MonoBehaviour {
 	private Vector3 latestDirection;
 	private bool stopCameraAnimation = false;
 	public float CameraSpeed = 1f;
+	public float DefaultCameraY = 300;
 
 
 	// Use this for initialization
 	void Start () {
-	
+		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, DefaultCameraY,Camera.main.transform.position.z);
 	}
 	
 	// Update is called once per frame
