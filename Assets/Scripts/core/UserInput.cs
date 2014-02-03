@@ -57,6 +57,8 @@ public class UserInput : MonoBehaviour {
 				- Camera.main.ScreenToWorldPoint(hitPosition);	
 			direction = direction * -1;
 
+
+
 			userFingerMoveHistory.Add(new FingerDestination(direction));
 
 			latestDirection = direction;
@@ -73,54 +75,57 @@ public class UserInput : MonoBehaviour {
 			stopCameraAnimation = false;
 
 			// Calculate speed
+			double speedX = 0;
+			double speedZ = 0;
 			if ( userFingerMoveHistory.Count >= 2) {
 				FingerDestination lastCoord = userFingerMoveHistory[userFingerMoveHistory.Count - 1];
 				FingerDestination prevCoord = userFingerMoveHistory[userFingerMoveHistory.Count - 2];
 
 				float dx = lastCoord.getX() - prevCoord.getX();
-				float dy = lastCoord.getZ() - prevCoord.getZ();
+				float dz = lastCoord.getZ() - prevCoord.getZ();
 
-				long dt = lastCoord.getTicks() - prevCoord.getTicks();
-
-				//dx / dt
-				Debug.Log(lastCoord.getX() + ":" + prevCoord.getX());
-				//Debug.Log(dx + ":" + (dx/dt));
+				double dt = lastCoord.getTicks() - prevCoord.getTicks();
+				speedX = Math.Round(dx/dt,3) / 3;
+				speedZ = Math.Round(dz/dt,3) / 3;
+				userFingerMoveHistory = new List<FingerDestination>();
 				//Debug.Log(dt/1000);
 			}
 
 			Vector3 curPos = Camera.main.transform.position;
 			Vector3 shiftDifference = hitPosition - pointerPosition;
-			float speed = 50;
+
 			float shiftX = curPos.x;
 			float shiftZ = curPos.z;
 
-			if ( Mathf.Abs(shiftDifference.x) > Mathf.Abs(shiftDifference.y) ){
-				if ( shiftDifference.x < 0 ){
-					shiftZ -= speed;
-				} else {
-					shiftZ += speed;
-				}
-			} else {
-				if ( shiftDifference.y < 0 ){
-					shiftX += speed;
-				} else {
-					shiftX -= speed;
-				}
-			}
+			Debug.Log(speedZ + ":" + speedX);
+			shiftZ += (float)speedZ;
+			shiftX += (float)speedX; 
+
 
 			animationDistance = new Vector3(shiftX, 300,shiftZ);
 			StartCoroutine(SmoothCameraMoveOnTouchEnd());
 		}
 	}
 
+	public static float Round(float value, int digits)
+	{
+		float mult = Mathf.Pow(10.0f, (float)digits);
+		return Mathf.Round(value * mult) / mult;
+	}
+
 	private class FingerDestination
 	{
 		Vector3 pos;
-		long time;
+		double time;
 		public FingerDestination(Vector3 pos)
 		{
-			pos = pos;
-			time = DateTime.UtcNow.Ticks;
+			this.pos = pos;
+			this.time = UnixTimeStampToDateTime();
+		}
+
+		private double UnixTimeStampToDateTime( )
+		{
+			return (DateTime.Now - new DateTime(1970, 1, 1).ToLocalTime()).TotalSeconds;
 		}
 
 		public float getX()
@@ -133,7 +138,7 @@ public class UserInput : MonoBehaviour {
 			return pos.z;
 		}
 
-		public long getTicks()
+		public double getTicks()
 		{
 			return time;
 		}
