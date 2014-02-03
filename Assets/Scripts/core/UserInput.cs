@@ -13,12 +13,19 @@ public class UserInput : MonoBehaviour {
 	private Vector3 latestDirection;
 	private bool stopCameraAnimation = false;
 	public float CameraSpeed = 1f;
-	public float DefaultCameraY = 300;
+	private float DefaultCameraY = 300;
+
+
 
 
 	// Use this for initialization
 	void Start () {
+
+
+
 		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, DefaultCameraY,Camera.main.transform.position.z);
+
+
 	}
 	
 	// Update is called once per frame
@@ -28,6 +35,14 @@ public class UserInput : MonoBehaviour {
 		bool userFingerPressed = Input.GetMouseButton(0);
 		Vector3 pointerPosition = Input.mousePosition;
 
+		/*
+		Vector3 a = new Vector3(Camera.main.transform.position.x, DefaultCameraY,Camera.main.transform.position.z);
+		Ray ray = Camera.main.ScreenPointToRay(a);
+		RaycastHit hit;
+		if (Physics.Raycast (ray,  out hit)) {
+			Debug.DrawLine (ray.origin, hit.point, Color.yellow);
+		}*/
+
 		// Move the camera
 		if ( lockCameraMovement == false ){
 			moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
@@ -36,16 +51,25 @@ public class UserInput : MonoBehaviour {
 		selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
 	}
 
-
-
-
-
-
-
-
 	private List<FingerDestination> userFingerMoveHistory
 		= new List<FingerDestination>();	
 
+
+	private bool reachedBoundaries()
+	{
+		float terrainX = Terrain.activeTerrain.terrainData.size.y;
+		float terrainZ = Terrain.activeTerrain.terrainData.size.z;
+
+		float boundCoordX = Camera.main.transform.position.x - Screen.height/2;
+		float boundCoordZ = Camera.main.transform.position.z - Screen.width/2;
+
+
+		bool top = boundCoordX > 0;
+		bool bottom = boundCoordX > terrainX;
+		bool leftRight = Camera.main.transform.position.z > 222 && Camera.main.transform.position.z < 585;
+
+		return leftRight == false;
+	}
 	void moveCamera(bool userFingerUp, bool userFingerDown, bool userFingerPressed, Vector3 pointerPosition)
 	{
 		if ( userFingerDown ) {
@@ -74,8 +98,11 @@ public class UserInput : MonoBehaviour {
 			latestDirection = direction;
 
 			Vector3 calculatedPosition = cameraStartPosition + direction;
-			cameraMovePosition = new Vector3(calculatedPosition.x, 300, calculatedPosition.z);
+			cameraMovePosition = new Vector3(calculatedPosition.x, DefaultCameraY, calculatedPosition.z);
+
+
 			Camera.main.transform.position = cameraMovePosition;
+
 		}
 
 
@@ -100,7 +127,7 @@ public class UserInput : MonoBehaviour {
 				// Reset coord list
 				userFingerMoveHistory = new List<FingerDestination>();
 			}
-
+			
 			Vector3 curPos = Camera.main.transform.position;
 			Vector3 shiftDifference = hitPosition - pointerPosition;
 
@@ -112,7 +139,7 @@ public class UserInput : MonoBehaviour {
 			shiftX += (float)speedX; 
 
 
-			animationDistance = new Vector3(shiftX, 300,shiftZ);
+			animationDistance = new Vector3(shiftX, DefaultCameraY,shiftZ);
 			cameraStartPosition = Camera.main.transform.position - animationDistance;
 			StartCoroutine(SmoothCameraMoveOnTouchEnd());
 		}
