@@ -14,7 +14,7 @@ public class Menu : MonoBehaviour {
 	public GUISkin skin;
 
 	private Texture2D testButton;
-	private Rect niceButtonRect = new Rect (50, Screen.height - 100, 50,50);
+	private Rect niceButtonRect = new Rect (50, Screen.height - 100, 100,100);
 
 	// Use this for initialization
 	void Start () {
