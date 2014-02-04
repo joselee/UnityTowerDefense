@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 {
@@ -7,8 +8,33 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	private Vector3 lastValidPosition;
 	private bool currentPositionValid = true;
 
+	private GUIButton showInfoButton;
+
+
+	// When the button is clicked
+	public class ShowInfoMenu : IClick
+	{
+		public void perform()
+		{
+			Debug.Log("Clicked");
+		}
+	};
+
 	void Start()
     {
+		// Click handler
+		ShowInfoMenu showMenu = new ShowInfoMenu();
+
+		// Properties for buttom
+		GUIProperties properties = new GUIProperties();
+		properties.SetTexture("build");
+		properties.SetClickHandler(showMenu);
+
+		// Creating button
+		showInfoButton = new GUIButton(properties);
+		// Registering button
+		GUIFactory.AddButton(showInfoButton);
+
 		lastValidPosition = gameObject.transform.position;
     }
 
@@ -31,7 +57,13 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 			{
 				dragStartUnitPosition = transform.position;
 			}
+
+			float xDiff = position.x - dragStartPosition.x;
+			float zDiff = position.z - dragStartPosition.z;
+
+
 			transform.position = dragStartUnitPosition + position - dragStartPosition;
+
 			return true;
 		}
 		return false;
@@ -54,13 +86,14 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	// Selecting unit
 	public void OnSelect()
 	{
-
+		showInfoButton.Show();
 		SelectGameObject.HighlightObject (gameObject);
 		unitSelected = true;
 	}
 	// Deselecting unit
 	public void OnDeselect()
 	{
+		showInfoButton.Hide();
 		SelectGameObject.UnHightlightObject (gameObject);
 		unitSelected = false;
 	}

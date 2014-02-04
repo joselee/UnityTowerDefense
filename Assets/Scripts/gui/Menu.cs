@@ -46,7 +46,7 @@ public class Menu : MonoBehaviour {
 		//}
 
 
-
+		/*
 		GUI.Box (new Rect (0,Screen.height - 100,Screen.width,100), "");
 
 		if(cannonButton(cannonButtonCaption)) {
@@ -66,6 +66,7 @@ public class Menu : MonoBehaviour {
 			selectedObject = AirEnemy;
 			Debug.Log("AirEnemy selected");
 		}
+		*/
 	}
 
 	// Update is called once per frame
