@@ -53,11 +53,12 @@ public class UserInput : MonoBehaviour {
 				tracking = true;
 
 				// First check if we're selecting/dragging an object
-				selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
+
 				// Move the camera
-				if ( lockCameraMovement == false ){
-					moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
-				}
+
+				moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
+				selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
+
 			}
 		}
 
@@ -65,7 +66,7 @@ public class UserInput : MonoBehaviour {
 
 	void moveCamera(bool userFingerUp, bool userFingerDown, bool userFingerPressed, Vector3 pointerPosition)
 	{
-		if ( userFingerDown ) {
+		if ( userFingerDown && lockCameraMovement == false) {
 			// Storing starting point
 			hitPosition = pointerPosition;
 
@@ -76,7 +77,7 @@ public class UserInput : MonoBehaviour {
 
 		}
 
-		if ( userFingerPressed ) {
+		if ( userFingerPressed && lockCameraMovement == false) {
 
 			//current_position.z = hit_position.z = camera_position.y;
 			pointerPosition.z = hitPosition.z = cameraStartPosition.y;
@@ -130,11 +131,15 @@ public class UserInput : MonoBehaviour {
 				if ( hit.transform.gameObject.name == "Terrain" ){
 					if ( terrainPointed == pointerPosition ){
 						SelectGameObject.DeselectAll();
+					} else {
+
 					}
 				}
 				// If we have not move a screen
 				if (latestSelectCameraPosition == pointerPosition){
 					SelectGameObject.Dispatch(hit.transform.gameObject);
+				} else {
+
 				}
 
 				lockCameraMovement = false;
