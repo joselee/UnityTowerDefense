@@ -143,7 +143,7 @@ public class UserInput : MonoBehaviour {
 				}
 				latestSelectCameraPosition = pointerPosition;
 				draggableComponent = DragGameObject.GetDraggable(hit.transform.gameObject);
-				if (draggableComponent != null && SelectGameObject.SelectionPresent()) {
+				if (draggableComponent != null && SelectGameObject.GetObjectByIndex(0) == draggableComponent) {
 					lockCameraMovement = true;
 				} else {
 					lockCameraMovement = false;

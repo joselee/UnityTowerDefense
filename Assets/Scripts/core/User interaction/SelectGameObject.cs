@@ -22,6 +22,12 @@ public class SelectGameObject {
 	{
 		return selected.Count > 0;
 	}
+
+	public static ISelectable GetObjectByIndex(int index)
+	{
+		return index < selected.Count ? selected[index] : null;
+	}
+
 	public static void Dispatch(GameObject target)
 	{
 
