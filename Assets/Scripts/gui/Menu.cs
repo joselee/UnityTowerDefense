@@ -37,15 +37,15 @@ public class Menu : MonoBehaviour {
 		GUI.skin = skin;
 		testButton = (Texture2D) Resources.Load("people", typeof(Texture2D));
 
-		if ( GUI.Button (niceButtonRect, testButton) ) {
-			Debug.Log("OLOLO");
-		}
+		//if ( GUI.Button (niceButtonRect, testButton) ) {
+		//	Debug.Log("OLOLO");
+		//}
 
 
 		//	Debug.Log("Clicked");
 		//}
 
-		/*
+
 
 		GUI.Box (new Rect (0,Screen.height - 100,Screen.width,100), "");
 
@@ -65,7 +65,7 @@ public class Menu : MonoBehaviour {
 		
 			selectedObject = AirEnemy;
 			Debug.Log("AirEnemy selected");
-		}*/
+		}
 	}
 
 	// Update is called once per frame
