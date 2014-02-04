@@ -29,26 +29,18 @@ public class UserInput : MonoBehaviour {
 		bool userFingerPressed = false;
 		Vector3 pointerPosition = Vector3.zero;
 
-		bool tracking = false;
+
 		if(Input.touchCount == 0){
 			userFingerUp = Input.GetMouseButtonUp(0);
 			userFingerDown = Input.GetMouseButtonDown(0);
 			userFingerPressed = Input.GetMouseButton(0);
 			pointerPosition = Input.mousePosition;
-			tracking = true;
-
-			if ( lockCameraMovement == false ){
-				moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
-			}
-			selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
-
 		} else {
 			if (Input.touchCount == 1){
 				userFingerUp = Input.GetTouch(0).phase == TouchPhase.Ended;
 				userFingerDown = Input.GetTouch(0).phase == TouchPhase.Began;
 				userFingerPressed = Input.GetTouch(0).phase == TouchPhase.Moved;
 				pointerPosition = Input.GetTouch(0).position;
-				tracking = true;
 			}
 		}
 
