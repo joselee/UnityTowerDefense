@@ -9,12 +9,7 @@ public class UserInput : MonoBehaviour {
 	private Vector3 hitPosition = Vector3.zero;
 	private Vector3 cameraStartPosition = Vector3.zero;
 	private Vector3 cameraMovePosition;
-	private bool stopCameraAnimation = false;
 	private float DefaultCameraY = 400;
-
-	Vector3 previousFramePosition;
-	Vector3 velocity = Vector3.zero;
-
 
 	// Use this for initialization
 	void Start () {
@@ -45,25 +40,22 @@ public class UserInput : MonoBehaviour {
 		}
 
 		selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
-		moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
-
-
+		if(!lockCameraMovement)
+		{
+			moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
+		}
 	}
 
 	void moveCamera(bool userFingerUp, bool userFingerDown, bool userFingerPressed, Vector3 pointerPosition)
 	{
-		if ( userFingerDown && lockCameraMovement == false) {
-			// Storing starting point
+		if ( userFingerDown ) {
+			rigidbody.isKinematic = true;
 			hitPosition = pointerPosition;
-
-			stopCameraAnimation = true;
-			cameraStartPosition = Camera.main.transform.position;
-			velocity = Vector3.zero;
-			rigidbody.velocity = velocity;
-
+			cameraStartPosition = rigidbody.position;
 		} 
 
-		if ( userFingerPressed && lockCameraMovement == false) {
+		if ( userFingerPressed ) {
+			rigidbody.isKinematic = true;
 
 			//current_position.z = hit_position.z = camera_position.y;
 			pointerPosition.z = hitPosition.z = cameraStartPosition.y;
@@ -75,24 +67,13 @@ public class UserInput : MonoBehaviour {
 			Vector3 calculatedPosition = cameraStartPosition + direction;
 			cameraMovePosition = new Vector3(calculatedPosition.x, DefaultCameraY, calculatedPosition.z);
 
-			Camera.main.transform.position = cameraMovePosition;
-
-
-			// Calculate the velocity of the camera: Distance traveled since the previous frame / time since previous frame.
-			Vector3 distance = cameraMovePosition - previousFramePosition;
-			velocity = distance/Time.deltaTime;
-			previousFramePosition = cameraMovePosition;
-
+			rigidbody.MovePosition (cameraMovePosition);
 		}
 
-		// User finished draggin.. slide the camera to a stop using Rigidbody physics
+		// Stopped moving camera.
 		if ( userFingerUp ) {
-
-			//float diffx = cameraStartPosition.x  - Camera.main.transform.position.x  
-			//Debug.Log(cameraStartPosition.x + "->" + Camera.main.transform.position.x );
-
-			rigidbody.AddForce(velocity, ForceMode.VelocityChange);
-			velocity = Vector3.zero;
+			rigidbody.isKinematic = false; // Kinematic rigidbodies are NOT affected by physics forces.
+			rigidbody.AddForce(rigidbody.velocity, ForceMode.VelocityChange);
 		}
 	}
 
