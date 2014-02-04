@@ -24,10 +24,10 @@ public class UserInput : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		bool userFingerUp;
-		bool userFingerDown;
-		bool userFingerPressed;
-		Vector3 pointerPosition;
+		bool userFingerUp = false;
+		bool userFingerDown = false;
+		bool userFingerPressed = false;
+		Vector3 pointerPosition = Vector3.zero;
 
 		bool tracking = false;
 		if(Input.touchCount == 0){
@@ -37,12 +37,10 @@ public class UserInput : MonoBehaviour {
 			pointerPosition = Input.mousePosition;
 			tracking = true;
 
-			// First check if we're selecting/dragging an object
-			selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
-			// Move the camera
 			if ( lockCameraMovement == false ){
 				moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
 			}
+			selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
 
 		} else {
 			if (Input.touchCount == 1){
@@ -51,16 +49,12 @@ public class UserInput : MonoBehaviour {
 				userFingerPressed = Input.GetTouch(0).phase == TouchPhase.Moved;
 				pointerPosition = Input.GetTouch(0).position;
 				tracking = true;
-
-				// First check if we're selecting/dragging an object
-
-				// Move the camera
-
-				moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
-				selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
-
 			}
 		}
+
+		selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
+		moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
+
 
 	}
 
@@ -75,7 +69,7 @@ public class UserInput : MonoBehaviour {
 			velocity = Vector3.zero;
 			rigidbody.velocity = velocity;
 
-		}
+		} 
 
 		if ( userFingerPressed && lockCameraMovement == false) {
 
@@ -96,8 +90,8 @@ public class UserInput : MonoBehaviour {
 			Vector3 distance = cameraMovePosition - previousFramePosition;
 			velocity = distance/Time.deltaTime;
 			previousFramePosition = cameraMovePosition;
-		}
 
+		}
 
 		// User finished draggin.. slide the camera to a stop using Rigidbody physics
 		if ( userFingerUp ) {
@@ -105,8 +99,8 @@ public class UserInput : MonoBehaviour {
 			//float diffx = cameraStartPosition.x  - Camera.main.transform.position.x  
 			//Debug.Log(cameraStartPosition.x + "->" + Camera.main.transform.position.x );
 
-			//rigidbody.AddForce(velocity, ForceMode.VelocityChange);
-			//velocity = Vector3.zero;
+			rigidbody.AddForce(velocity, ForceMode.VelocityChange);
+			velocity = Vector3.zero;
 		}
 	}
 
@@ -125,7 +119,7 @@ public class UserInput : MonoBehaviour {
 		
 		if (Physics.Raycast (ray, out hit)) {
 
-			if(userFingerUp)
+			if(userFingerUp )
 			{
 				// Deselect all objects
 				if ( hit.transform.gameObject.name == "Terrain" ){
@@ -142,7 +136,7 @@ public class UserInput : MonoBehaviour {
 
 				}
 
-				lockCameraMovement = false;
+
 				if (draggableComponent != null && draggingOccured){
 					DragGameObject.DispatchDragStop(draggableComponent);
 					draggingOccured = false;
@@ -157,7 +151,7 @@ public class UserInput : MonoBehaviour {
 				}
 				latestSelectCameraPosition = pointerPosition;
 				draggableComponent = DragGameObject.GetDraggable(hit.transform.gameObject);
-				if (draggableComponent != null) {
+				if (draggableComponent != null && SelectGameObject.SelectionPresent()) {
 					lockCameraMovement = true;
 				} else {
 					lockCameraMovement = false;
@@ -168,6 +162,7 @@ public class UserInput : MonoBehaviour {
 		if ( draggableComponent != null ) {
 			if ( latestDragCameraPosition != pointerPosition){
 				lockCameraMovement = DragGameObject.DispatchDrag(draggableComponent, pointerPosition);
+
 				draggingOccured = lockCameraMovement;
 			}
 		} else {

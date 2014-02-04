@@ -17,6 +17,11 @@ public class SelectGameObject {
 			selected.Remove(cSelected);
 		}
 	}
+
+	public static bool SelectionPresent()
+	{
+		return selected.Count > 0;
+	}
 	public static void Dispatch(GameObject target)
 	{
 
