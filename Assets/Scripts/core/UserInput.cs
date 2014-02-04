@@ -72,8 +72,9 @@ public class UserInput : MonoBehaviour {
 
 		// Stopped moving camera.
 		if ( userFingerUp ) {
+			Vector3 velocity = rigidbody.velocity;
 			rigidbody.isKinematic = false; // Kinematic rigidbodies are NOT affected by physics forces.
-			rigidbody.AddForce(rigidbody.velocity, ForceMode.VelocityChange);
+			rigidbody.AddForce(velocity, ForceMode.VelocityChange);
 		}
 	}
 
