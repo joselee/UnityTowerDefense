@@ -63,21 +63,6 @@ public class UserInput : MonoBehaviour {
 
 	}
 
-	private bool reachedBoundaries()
-	{
-		float terrainX = Terrain.activeTerrain.terrainData.size.y;
-		float terrainZ = Terrain.activeTerrain.terrainData.size.z;
-
-		float boundCoordX = Camera.main.transform.position.x - Screen.height/2;
-		float boundCoordZ = Camera.main.transform.position.z - Screen.width/2;
-
-
-		bool top = boundCoordX > 0;
-		bool bottom = boundCoordX > terrainX;
-		bool leftRight = Camera.main.transform.position.z > 222 && Camera.main.transform.position.z < 585;
-
-		return leftRight == false;
-	}
 	void moveCamera(bool userFingerUp, bool userFingerDown, bool userFingerPressed, Vector3 pointerPosition)
 	{
 		if ( userFingerDown ) {
@@ -88,11 +73,11 @@ public class UserInput : MonoBehaviour {
 			cameraStartPosition = Camera.main.transform.position;
 			velocity = Vector3.zero;
 			rigidbody.velocity = velocity;
-			Debug.Log("down");
+
 		}
 
 		if ( userFingerPressed ) {
-			Debug.Log("pressed");
+
 			//current_position.z = hit_position.z = camera_position.y;
 			pointerPosition.z = hitPosition.z = cameraStartPosition.y;
 
@@ -115,12 +100,12 @@ public class UserInput : MonoBehaviour {
 
 		// User finished draggin.. slide the camera to a stop using Rigidbody physics
 		if ( userFingerUp ) {
-			Debug.Log("up");
+
 			//float diffx = cameraStartPosition.x  - Camera.main.transform.position.x  
 			//Debug.Log(cameraStartPosition.x + "->" + Camera.main.transform.position.x );
 
-			rigidbody.AddForce(velocity, ForceMode.VelocityChange);
-			velocity = Vector3.zero;
+			//rigidbody.AddForce(velocity, ForceMode.VelocityChange);
+			//velocity = Vector3.zero;
 		}
 	}
 
