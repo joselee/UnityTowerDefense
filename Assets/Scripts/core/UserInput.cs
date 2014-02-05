@@ -11,6 +11,9 @@ public class UserInput : MonoBehaviour {
 	private Vector3 cameraMovePosition;
 	private float DefaultCameraY = 400;
 
+	private Vector3 lastCameraPosition = Vector3.zero;
+	private Vector3 cameraVelocity = Vector3.zero;
+
 	// Use this for initialization
 	void Start () {
 		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, DefaultCameraY,Camera.main.transform.position.z);
@@ -49,13 +52,13 @@ public class UserInput : MonoBehaviour {
 	void moveCamera(bool userFingerUp, bool userFingerDown, bool userFingerPressed, Vector3 pointerPosition)
 	{
 		if ( userFingerDown ) {
-			rigidbody.isKinematic = true;
 			hitPosition = pointerPosition;
-			cameraStartPosition = rigidbody.position;
+			cameraStartPosition = Camera.main.transform.position;
+			cameraVelocity = Vector3.zero;
 		} 
 
 		if ( userFingerPressed ) {
-			rigidbody.isKinematic = true;
+			cameraVelocity = Vector3.zero;
 
 			//current_position.z = hit_position.z = camera_position.y;
 			pointerPosition.z = hitPosition.z = cameraStartPosition.y;
@@ -67,14 +70,16 @@ public class UserInput : MonoBehaviour {
 			Vector3 calculatedPosition = cameraStartPosition + direction;
 			cameraMovePosition = new Vector3(calculatedPosition.x, DefaultCameraY, calculatedPosition.z);
 
-			rigidbody.MovePosition (cameraMovePosition);
+			Camera.main.transform.position = cameraMovePosition;
+
+			cameraVelocity = (Camera.main.transform.position - lastCameraPosition) / Time.deltaTime;
+			lastCameraPosition = cameraMovePosition;
 		}
 
 		// Stopped moving camera.
 		if ( userFingerUp ) {
-			Vector3 velocity = rigidbody.velocity;
-			rigidbody.isKinematic = false; // Kinematic rigidbodies are NOT affected by physics forces.
-			rigidbody.AddForce(velocity, ForceMode.VelocityChange);
+			rigidbody.AddForce(cameraVelocity, ForceMode.VelocityChange);
+			cameraVelocity = Vector3.zero;
 		}
 	}
 
