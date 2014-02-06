@@ -32,10 +32,10 @@ public class Menu : MonoBehaviour {
 		return GUI.Button(new Rect(120,Screen.height - 100,120,100), "MissileLauncher");
 	}
 
-
+	/*
 	void OnGUI(){
-		GUI.skin = skin;
-		testButton = (Texture2D) Resources.Load("people", typeof(Texture2D));
+		//GUI.skin = skin;
+		//testButton = (Texture2D) Resources.Load("people", typeof(Texture2D));
 
 		//if ( GUI.Button (niceButtonRect, testButton) ) {
 		//	Debug.Log("OLOLO");
@@ -46,7 +46,7 @@ public class Menu : MonoBehaviour {
 		//}
 
 
-		/*
+
 		GUI.Box (new Rect (0,Screen.height - 100,Screen.width,100), "");
 
 		if(cannonButton(cannonButtonCaption)) {
@@ -66,8 +66,9 @@ public class Menu : MonoBehaviour {
 			selectedObject = AirEnemy;
 			Debug.Log("AirEnemy selected");
 		}
-		*/
+
 	}
+	*/
 
 	// Update is called once per frame
 	void Update () {

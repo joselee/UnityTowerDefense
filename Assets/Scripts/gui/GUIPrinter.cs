@@ -6,7 +6,7 @@ public class GUIPrinter : MonoBehaviour {
 	public GUISkin skin;
 
 	float buttonPosition = 0.0f;
-
+	/*
 	void OnGUI()
 	{
 		GUI.skin = skin;
@@ -26,7 +26,7 @@ public class GUIPrinter : MonoBehaviour {
 				}
 			} 
 		}
-	}
+	}*/
 	// Use this for initialization
 	void Start () {
 	
