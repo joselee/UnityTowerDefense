@@ -84,7 +84,6 @@ public class UserInput : MonoBehaviour {
 
 		// Stopped moving camera.
 		if ( userFingerUp && cameraVelocity != Vector3.zero) {
-			print ("adding force: " + cameraVelocity);
 			rigidbody.AddForce(cameraVelocity, ForceMode.VelocityChange);
 			cameraVelocity = Vector3.zero;
 		}
