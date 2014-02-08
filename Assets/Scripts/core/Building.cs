@@ -8,39 +8,24 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	private Vector3 lastValidPosition;
 	private bool currentPositionValid = true;
 
-	private GUIButton showInfoButton;
 
 
-	// When the button is clicked
-	public class ShowInfoMenu : IClick
-	{
-		public void perform()
-		{
-			Debug.Log("Clicked");
-		}
-	};
+
+	private bool upgradeButtonShown = false;
+	private GameObject upgradeButton;
+
 
 	void Start()
     {
-		// Click handler
-		ShowInfoMenu showMenu = new ShowInfoMenu();
-
-		// Properties for buttom
-		GUIProperties properties = new GUIProperties();
-		properties.SetTexture("build");
-		properties.SetClickHandler(showMenu);
-
-		// Creating button
-		showInfoButton = new GUIButton(properties);
-		// Registering button
-		GUIFactory.AddButton(showInfoButton);
 
 		lastValidPosition = gameObject.transform.position;
     }
 
     void Update()
     {
-
+		if ( upgradeButton) {
+			//UI.animateFromBottom(upgradeButton,0);
+		}
     }
 
 
@@ -63,7 +48,7 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 
 
 			transform.position = dragStartUnitPosition + position - dragStartPosition;
-
+			Debug.Log("SELECTED");
 			return true;
 		}
 		return false;
@@ -88,7 +73,13 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	{
 		//showInfoButton.Show();
 		SelectGameObject.HighlightObject (gameObject);
+
 		unitSelected = true;
+
+		UIObject upButton = new UIObject("gui/build-button", "factory-button", 79, 79 );
+
+		upButton.setPosition(new Vector2(Screen.width / 2 - 79/2,30));
+		upgradeButton = UI.attach(upButton);
 	}
 	// Deselecting unit
 	public void OnDeselect()
@@ -96,6 +87,10 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 		//showInfoButton.Hide();
 		SelectGameObject.UnHightlightObject (gameObject);
 		unitSelected = false;
+		if ( upgradeButton ) {
+
+			GameObject.Destroy(upgradeButton);
+		}
 	}
 
 	public bool IsSelected

@@ -20,10 +20,12 @@ public class DragGameObject  {
 	public static bool DispatchDrag(IDraggable draggableComponent, Vector3 pos)
 	{
 		Ray ray = Camera.main.ScreenPointToRay(pos);
+
 		Plane hPlane = new Plane(Vector3.up, Vector3.zero);
 		float distance = 0; 
 		if (hPlane.Raycast(ray, out distance)){
 			Vector3 pointerPosition = ray.GetPoint(distance);
+
 			return draggableComponent.OnDragMove(pointerPosition);
 		}
 		return false;
