@@ -13,11 +13,11 @@ public class MapBoundary : MonoBehaviour {
 	
 	}
 
-	void OnTriggerEnter(Collider collisionObject){
-		Destroy(collisionObject.gameObject);
-	}
-
-	void OnTriggerStay(Collider collisionObject){
-		Destroy(collisionObject.gameObject);
+	void OnTriggerExit(Collider collisionObject){
+		if(collisionObject.gameObject.tag == "Air_Enemy" || collisionObject.gameObject.tag == "Enemy")
+		{
+			print (collisionObject.gameObject.name);
+			Destroy(collisionObject.gameObject);
+		}
 	}
 }

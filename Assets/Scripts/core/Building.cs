@@ -86,14 +86,14 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	// Selecting unit
 	public void OnSelect()
 	{
-		showInfoButton.Show();
+		//showInfoButton.Show();
 		SelectGameObject.HighlightObject (gameObject);
 		unitSelected = true;
 	}
 	// Deselecting unit
 	public void OnDeselect()
 	{
-		showInfoButton.Hide();
+		//showInfoButton.Hide();
 		SelectGameObject.UnHightlightObject (gameObject);
 		unitSelected = false;
 	}
