@@ -13,6 +13,13 @@ public class UserInput : MonoBehaviour {
 
 	private Vector3 lastCameraPosition = Vector3.zero;
 	private Vector3 cameraVelocity = Vector3.zero;
+	private Vector3 prevPointerPosition = Vector3.zero;
+	private bool cameraHasMoved = false;
+
+
+	void Awake() {
+		Application.targetFrameRate = 60;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -55,10 +62,12 @@ public class UserInput : MonoBehaviour {
 			hitPosition = pointerPosition;
 			cameraStartPosition = Camera.main.transform.position;
 			cameraVelocity = Vector3.zero;
+			rigidbody.velocity = Vector3.zero;
 		} 
 
 		if ( userFingerPressed ) {
 			cameraVelocity = Vector3.zero;
+			rigidbody.velocity = Vector3.zero;
 
 			//current_position.z = hit_position.z = camera_position.y;
 			pointerPosition.z = hitPosition.z = cameraStartPosition.y;
@@ -72,14 +81,21 @@ public class UserInput : MonoBehaviour {
 
 			Camera.main.transform.position = cameraMovePosition;
 
-			cameraVelocity = (Camera.main.transform.position - lastCameraPosition) / Time.deltaTime;
-			lastCameraPosition = cameraMovePosition;
+			//Actually moved the mouse while dragging...
+			if(pointerPosition != prevPointerPosition)
+			{
+				cameraVelocity = (Camera.main.transform.position - lastCameraPosition) / Time.deltaTime;
+				lastCameraPosition = cameraMovePosition;
+				cameraHasMoved = true;
+			}
 		}
 
 		// Stopped moving camera.
-		if ( userFingerUp ) {
+		if ( userFingerUp && cameraHasMoved) {
+			print("adding a force of " + cameraVelocity);
 			rigidbody.AddForce(cameraVelocity, ForceMode.VelocityChange);
 			cameraVelocity = Vector3.zero;
+			cameraHasMoved = false;
 		}
 	}
 
