@@ -3,78 +3,93 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class UserInput : MonoBehaviour {
-
+public class UserInput : MonoBehaviour
+{
 	private bool lockCameraMovement = false;
 	private Vector3 hitPosition = Vector3.zero;
 	private Vector3 cameraStartPosition = Vector3.zero;
-	private Vector3 cameraMovePosition;
-	private float DefaultCameraY = 300;
+	private Vector3 cameraMovePosition = Vector3.zero;
+	private float defaultCameraY = 400;
 
 	private Vector3 lastCameraPosition = Vector3.zero;
 	private Vector3 cameraVelocity = Vector3.zero;
 
-	void Awake() {
+	private float deadZoneThreshold = 30f;
+	private bool withinDeadZone = true;
+	private Vector3 deadZoneLeavePosition = Vector3.zero;
+
+	void Awake ()
+	{
 		Application.targetFrameRate = 60;
 	}
 
-	// Use this for initialization
-	void Start () {
-		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, DefaultCameraY,Camera.main.transform.position.z);
+	void Start ()
+	{
+		Camera.main.transform.position = new Vector3 (Camera.main.transform.position.x, defaultCameraY, Camera.main.transform.position.z);
 	}
 
-	// Update is called once per frame
-	void Update () {
-
+	void Update ()
+	{
 		bool userFingerUp = false;
 		bool userFingerDown = false;
 		bool userFingerPressed = false;
 		Vector3 pointerPosition = Vector3.zero;
 
 
-		if(Input.touchCount == 0){
-			userFingerUp = Input.GetMouseButtonUp(0);
-			userFingerDown = Input.GetMouseButtonDown(0);
-			userFingerPressed = Input.GetMouseButton(0);
+		if (Input.touchCount == 0)
+		{
+			userFingerUp = Input.GetMouseButtonUp (0);
+			userFingerDown = Input.GetMouseButtonDown (0);
+			userFingerPressed = Input.GetMouseButton (0);
 			pointerPosition = Input.mousePosition;
-		} else {
-			if (Input.touchCount == 1){
-				userFingerUp = Input.GetTouch(0).phase == TouchPhase.Ended;
-				userFingerDown = Input.GetTouch(0).phase == TouchPhase.Began;
-				userFingerPressed = Input.GetTouch(0).phase == TouchPhase.Moved;
-				pointerPosition = Input.GetTouch(0).position;
+		}
+		else
+		{
+			if (Input.touchCount == 1)
+			{
+				userFingerUp = Input.GetTouch (0).phase == TouchPhase.Ended;
+				userFingerDown = Input.GetTouch (0).phase == TouchPhase.Began;
+				userFingerPressed = Input.GetTouch (0).phase == TouchPhase.Moved;
+				pointerPosition = Input.GetTouch (0).position;
 			}
 		}
 
-		selectAndDrag(pointerPosition, userFingerUp, userFingerDown);
-		if(!lockCameraMovement)
+		selectAndDrag (pointerPosition, userFingerUp, userFingerDown, userFingerPressed);
+
+		if (!lockCameraMovement)
 		{
-			moveCamera(userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
+			moveCamera (userFingerUp, userFingerDown, userFingerPressed, pointerPosition);
 		}
 	}
 
-	void moveCamera(bool userFingerUp, bool userFingerDown, bool userFingerPressed, Vector3 pointerPosition)
+	void moveCamera (bool userFingerUp, bool userFingerDown, bool userFingerPressed, Vector3 pointerPosition)
 	{
-		if ( userFingerDown ) {
+		if (userFingerDown)
+		{
 			hitPosition = pointerPosition;
 			cameraStartPosition = Camera.main.transform.position;
 			cameraVelocity = Vector3.zero;
 			rigidbody.velocity = Vector3.zero;
-		} 
+		}
 
-		if ( userFingerPressed ) {
+		if (userFingerPressed && !withinDeadZone)
+		{
 			cameraVelocity = Vector3.zero;
 			rigidbody.velocity = Vector3.zero;
 
-			//current_position.z = hit_position.z = camera_position.y;
-			pointerPosition.z = hitPosition.z = cameraStartPosition.y;
+			// Our camera is rotated 90degrees on the X axis.. so Z axis and Y axis are inverted.
+			pointerPosition.z = hitPosition.z = deadZoneLeavePosition.z = cameraStartPosition.y;
+
+			// Add the offset of the deadZone, so that the camera doesn't suddenly jump 30f when it starts moving.
+			Vector3 deadZoneOffset = deadZoneLeavePosition - hitPosition;
+			hitPosition += deadZoneOffset;
 
 			// Calculating camera shift
-			Vector3 direction = Camera.main.ScreenToWorldPoint(pointerPosition) - Camera.main.ScreenToWorldPoint(hitPosition);	
+			Vector3 direction = Camera.main.ScreenToWorldPoint (pointerPosition) - Camera.main.ScreenToWorldPoint (hitPosition);
 			direction *= -1;
 
 			Vector3 calculatedPosition = cameraStartPosition + direction;
-			cameraMovePosition = new Vector3(calculatedPosition.x, DefaultCameraY, calculatedPosition.z);
+			cameraMovePosition = new Vector3 (calculatedPosition.x, defaultCameraY, calculatedPosition.z);
 
 			Camera.main.transform.position = cameraMovePosition;
 
@@ -83,8 +98,9 @@ public class UserInput : MonoBehaviour {
 		}
 
 		// Stopped moving camera.
-		if ( userFingerUp && cameraVelocity != Vector3.zero) {
-			rigidbody.AddForce(cameraVelocity, ForceMode.VelocityChange);
+		if (userFingerUp && cameraVelocity != Vector3.zero)
+		{
+			rigidbody.AddForce (cameraVelocity, ForceMode.VelocityChange);
 			cameraVelocity = Vector3.zero;
 		}
 	}
@@ -92,69 +108,89 @@ public class UserInput : MonoBehaviour {
 	/*----- Moving a draggable object below ------*/
 	private IDraggable draggableComponent = null;
 	private Vector3 latestDragCameraPosition;
-	private Vector3 latestSelectCameraPosition;
+	private Vector3 latestFingerDownPosition;
 	private bool draggingOccured = false;
 	private Vector3 terrainPointed;
-	
-	void selectAndDrag(Vector3 pointerPosition, bool userFingerUp, bool userFingerDown)
+
+	void selectAndDrag (Vector3 pointerPosition, bool userFingerUp, bool userFingerDown, bool userFingerPressed)
 	{
-
 		RaycastHit hit;
-		Ray ray = Camera.main.ScreenPointToRay(pointerPosition);
-		
-		if (Physics.Raycast (ray, out hit)) {
+		Ray ray = Camera.main.ScreenPointToRay (pointerPosition);
 
-			if(userFingerUp )
+		if (Physics.Raycast (ray, out hit))
+		{
+			if (userFingerDown)
+			{
+				latestFingerDownPosition = pointerPosition;
+				withinDeadZone = true;
+
+				if (hit.transform.gameObject.name == "Terrain")
+				{
+					terrainPointed = pointerPosition;
+				}
+				
+				
+				draggableComponent = DragGameObject.GetDraggable (hit.transform.gameObject);
+				if (draggableComponent != null && SelectGameObject.GetObjectByIndex (0) == draggableComponent)
+				{
+					lockCameraMovement = true;
+				}
+				else
+				{
+					lockCameraMovement = false;
+				}
+			}
+
+			// Once we leave the deadzone, we don't check this anymore until the next touch/mouse down.
+			if(userFingerPressed && withinDeadZone)
+			{
+				float draggedDistance = Vector3.Distance(latestFingerDownPosition, pointerPosition);
+				if(draggedDistance > deadZoneThreshold)
+				{
+					withinDeadZone = false;
+					deadZoneLeavePosition = pointerPosition;
+				}
+			}
+
+			if (userFingerUp)
 			{
 				// Deselect all objects
-				if ( hit.transform.gameObject.name == "Terrain" ){
-					if ( terrainPointed == pointerPosition ){
-						SelectGameObject.DeselectAll();
-					} else {
-
+				if (hit.transform.gameObject.name == "Terrain")
+				{
+					if (withinDeadZone)
+					{
+						SelectGameObject.DeselectAll ();
 					}
 				}
 				// If we have not move a screen
-				if (latestSelectCameraPosition == pointerPosition){
-					SelectGameObject.Dispatch(hit.transform.gameObject);
-				} else {
-
+				if (withinDeadZone)
+				{
+					SelectGameObject.Dispatch (hit.transform.gameObject);
 				}
 
-
-				if (draggableComponent != null && draggingOccured){
-					DragGameObject.DispatchDragStop(draggableComponent);
+				if (draggableComponent != null && draggingOccured)
+				{
+					DragGameObject.DispatchDragStop (draggableComponent);
 					draggingOccured = false;
 				}
-				draggableComponent = null;
 
+				draggableComponent = null;
+				withinDeadZone = true;
 			}
-			if(userFingerDown)
-			{
-				if ( hit.transform.gameObject.name == "Terrain" ){
-					terrainPointed = pointerPosition;
-				}
-				latestSelectCameraPosition = pointerPosition;
-				draggableComponent = DragGameObject.GetDraggable(hit.transform.gameObject);
-				if (draggableComponent != null && SelectGameObject.GetObjectByIndex(0) == draggableComponent) {
-					lockCameraMovement = true;
-				} else {
-					lockCameraMovement = false;
-				}
-			} 
 		}
 
-		if ( draggableComponent != null ) {
-			if ( latestDragCameraPosition != pointerPosition){
-				lockCameraMovement = DragGameObject.DispatchDrag(draggableComponent, pointerPosition);
-
+		if (draggableComponent != null)
+		{
+			if (!withinDeadZone)
+			{
+				lockCameraMovement = DragGameObject.DispatchDrag (draggableComponent, pointerPosition);
 				draggingOccured = lockCameraMovement;
 			}
-		} else {
-			lockCameraMovement = false; 
+		}
+		else
+		{
+			lockCameraMovement = false;
 		}
 		latestDragCameraPosition = pointerPosition;
-
 	}
-
 }
