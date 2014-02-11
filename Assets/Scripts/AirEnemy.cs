@@ -51,13 +51,7 @@ public class AirEnemy : MonoBehaviour {
 	{
 		Destroy(gameObject);
 	}
-	
-	void OnGUI() {
-		Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-		GUI.Box(new Rect((screenPos.x - healthBarLength/2), (Screen.height - screenPos.y) - 50, healthBarLength, 20), Health + "/" + maxHealth);
-		
-	}
-	
+
 	public void AdjustHealthBar() {
 		
 		healthBarLength = (Screen.width / 10) * (Health /(float)maxHealth);

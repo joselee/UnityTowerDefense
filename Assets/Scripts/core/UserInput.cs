@@ -80,7 +80,7 @@ public class UserInput : MonoBehaviour
 			rigidbody.velocity = Vector3.zero;
 		}
 
-		if (userFingerPressed && !withinDeadZone)
+		if (userFingerPressed )
 		{
 			cameraVelocity = Vector3.zero;
 			rigidbody.velocity = Vector3.zero;
@@ -89,8 +89,8 @@ public class UserInput : MonoBehaviour
 			pointerPosition.z = hitPosition.z = deadZoneLeavePosition.z = cameraStartPosition.y;
 
 			// Add the offset of the deadZone, so that the camera doesn't suddenly jump 30f when it starts moving.
-			Vector3 deadZoneOffset = deadZoneLeavePosition - hitPosition;
-			hitPosition += deadZoneOffset;
+		//	Vector3 deadZoneOffset = deadZoneLeavePosition - hitPosition;
+		//	hitPosition += deadZoneOffset;
 
 			// Calculating camera shift
 			Vector3 direction = Camera.main.ScreenToWorldPoint (pointerPosition) - Camera.main.ScreenToWorldPoint (hitPosition);
@@ -100,13 +100,13 @@ public class UserInput : MonoBehaviour
 			cameraMovePosition = new Vector3 (calculatedPosition.x, defaultCameraY, calculatedPosition.z);
 
 			// If we're hitting a boundary, dont allow the camera to move any further in that direction.
-			if(isAllowedDirection(direction))
-			{
+			//if(isAllowedDirection(direction))
+			//{
 				Camera.main.transform.position = cameraMovePosition;
 
 				cameraVelocity = (Camera.main.transform.position - lastCameraPosition) / Time.deltaTime;
 				lastCameraPosition = cameraMovePosition;
-			}
+		//	}
 		}
 
 		// Stopped moving camera.
@@ -154,7 +154,7 @@ public class UserInput : MonoBehaviour
 			}
 
 			// Once we leave the deadzone, we don't check this anymore until the next touch/mouse down.
-			if(userFingerPressed && withinDeadZone)
+			if(userFingerPressed )
 			{
 				float draggedDistance = Vector3.Distance(latestFingerDownPosition, pointerPosition);
 				if(draggedDistance > deadZoneThreshold)
