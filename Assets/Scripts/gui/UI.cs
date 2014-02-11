@@ -19,9 +19,10 @@ public class UI : MonoBehaviour {
 		float realPositionX = (Screen.width / 2 - o.getWidth()/2)*-1;
 		float realPositionY = (Screen.height / 2 - o.getHeight()/2)*-1;
 		Vector2 userPosition = o.getPosition();
-		
+
+
 		Vector3 correctedPosition 
-			= new Vector3( realPositionX + userPosition.x, realPositionY + userPosition.y, 1);
+			= new Vector3( realPositionX + userPosition.x,  realPositionY + userPosition.y, 1);
 		
 		GameObject inst 
 			= Instantiate(Resources.Load(o.getResourceName()), correctedPosition, Quaternion.identity) as GameObject;
@@ -32,6 +33,18 @@ public class UI : MonoBehaviour {
 		inst.name = o.getName();
 		return inst;
 	}
+
+	public static float convertY(float y, float h)
+	{
+		return (Screen.height / 2 - h/2)*-1 + y;
+	}
+
+	public static float convertX(float x, float w)
+	{
+		return (Screen.height / 2 -w/2)*-1 + x;
+	}
+
+
 
 	public static bool animateFromBottom(GameObject o, float targetHeigh)
 	{

@@ -41,6 +41,17 @@ public class SelectGameObject {
 				ISelectable selectableObject = selectableComponents[i] as ISelectable;
 				
 				ISelectable alreadySelected = null;
+
+				// In future, we may allow groups to be selected
+				// But for now, let's just reset em all
+				for (int a = 0; a<selected.Count; a++){
+					ISelectable cSelected = selected[a];
+					if ( alreadySelected != cSelected){
+						cSelected.OnDeselect();
+						selected.Remove(cSelected);
+					}
+				}
+
 				// call OnSelect method
 				// First check if it's there alread
 				// We don't want to select it twice, do we?
@@ -51,15 +62,6 @@ public class SelectGameObject {
 					alreadySelected = selectableObject;
 				} else {
 					alreadySelected = selectableObject;
-				}
-				// In future, we may allow groups to be selected
-				// But for now, let's just reset em all
-				for (int a = 0; a<selected.Count; a++){
-					ISelectable cSelected = selected[a];
-					if ( alreadySelected != cSelected){
-						cSelected.OnDeselect();
-						selected.Remove(cSelected);
-					}
 				}
 			}
 		}

@@ -76,19 +76,10 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 	{
 		//showInfoButton.Show();
 		SelectGameObject.HighlightObject (gameObject);
-
+		UnitBar.show();
 		unitSelected = true;
 
 
-		float bWidth = 79;
-		UIObject upButton = new UIObject("gui/upgrade-button", "factory-button", 79, 79 );
-		upButton.setPosition(new Vector2(Screen.width / 2 + 79/2,15));
-		upgradeButton = UI.attach(upButton);
-
-
-		UIObject bButton = new UIObject("gui/build-button", "build-button", 79, 79 );
-		bButton.setPosition(new Vector2(Screen.width / 2 - 79/2-20,15));
-		buildButton = UI.attach(bButton);
 
 	}
 	// Deselecting unit
@@ -97,12 +88,7 @@ public abstract class Building : MonoBehaviour, ISelectable, IDraggable
 		//showInfoButton.Hide();
 		SelectGameObject.UnHightlightObject (gameObject);
 		unitSelected = false;
-		if ( upgradeButton ) {
-
-			GameObject.Destroy(upgradeButton);
-			GameObject.Destroy(buildButton);
-
-		}
+		UnitBar.hide();
 	}
 
 	public bool IsSelected
