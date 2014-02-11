@@ -11,8 +11,10 @@ public class UserInput : MonoBehaviour
 	private Vector3 cameraMovePosition = Vector3.zero;
 	private float defaultCameraY = 400;
 
+	private Vector3 collisionDirection = Vector3.zero;
 	private Vector3 lastCameraPosition = Vector3.zero;
 	private Vector3 cameraVelocity = Vector3.zero;
+	private List<Vector3> compass = new List<Vector3>();
 
 	private float deadZoneThreshold = 30f;
 	private bool withinDeadZone = true;
@@ -26,6 +28,12 @@ public class UserInput : MonoBehaviour
 	void Start ()
 	{
 		Camera.main.transform.position = new Vector3 (Camera.main.transform.position.x, defaultCameraY, Camera.main.transform.position.z);
+		compass.Add(Vector3.left);
+		compass.Add(Vector3.right);
+		compass.Add(Vector3.forward);
+		compass.Add(Vector3.back);
+		compass.Add(Vector3.up);
+		compass.Add(Vector3.down);
 	}
 
 	void Update ()
@@ -91,10 +99,14 @@ public class UserInput : MonoBehaviour
 			Vector3 calculatedPosition = cameraStartPosition + direction;
 			cameraMovePosition = new Vector3 (calculatedPosition.x, defaultCameraY, calculatedPosition.z);
 
-			Camera.main.transform.position = cameraMovePosition;
+			// If we're hitting a boundary, dont allow the camera to move any further in that direction.
+			if(isAllowedDirection(direction))
+			{
+				Camera.main.transform.position = cameraMovePosition;
 
-			cameraVelocity = (Camera.main.transform.position - lastCameraPosition) / Time.deltaTime;
-			lastCameraPosition = cameraMovePosition;
+				cameraVelocity = (Camera.main.transform.position - lastCameraPosition) / Time.deltaTime;
+				lastCameraPosition = cameraMovePosition;
+			}
 		}
 
 		// Stopped moving camera.
@@ -192,5 +204,53 @@ public class UserInput : MonoBehaviour
 			lockCameraMovement = false;
 		}
 		latestDragCameraPosition = pointerPosition;
+	}
+
+	void OnCollisionEnter(Collision collision)
+	{
+        foreach (ContactPoint contact in collision.contacts) {
+        	Vector3 contactDirection = contact.point - transform.position;
+        	collisionDirection = getGeneralDirection(contactDirection);
+        }
+    }
+    void OnCollisionExit(Collision collision)
+    {
+    	collisionDirection = Vector3.zero;
+    }
+
+	private Vector3 getGeneralDirection(Vector3 v)
+	{
+	    float maxDot = -Mathf.Infinity;
+	    Vector3 ret = Vector3.zero;
+	 
+	    foreach( Vector3 direction in compass) { 
+	       float t = Vector3.Dot(v, direction);
+	       if (t > maxDot) {
+	         ret = direction;
+	         maxDot = t;
+	       }
+	    }
+	 
+	    return ret;
+	}
+
+	private bool isAllowedDirection(Vector3 desiredDirection)
+	{
+		/* When the camera is NOT hitting a boundary, collisionDirection is (0,0,0).
+		   When the camera IS hitting a boundary, collisionDirection is like (1,0,0).
+		   So, if we multiply and get (0,0,0).. we are not hitting any boundary and safe to move. */
+
+		float x = desiredDirection.x * collisionDirection.x;
+		float y = desiredDirection.y * collisionDirection.y;
+		float z = desiredDirection.z * collisionDirection.z;
+		Vector3 allowed = new Vector3(x,y,z);
+
+		bool rightOrForward = false;
+		if(collisionDirection == Vector3.right || collisionDirection == Vector3.forward){
+			allowed *= -1;
+			rightOrForward = getGeneralDirection(allowed) == collisionDirection;
+		}
+		
+		return (allowed == Vector3.zero) || (getGeneralDirection(allowed) == collisionDirection) || rightOrForward;
 	}
 }
