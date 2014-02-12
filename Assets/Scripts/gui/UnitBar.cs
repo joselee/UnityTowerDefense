@@ -21,7 +21,7 @@ public class UnitBar : MonoBehaviour {
 
 		int bWidth = 75;
 		UIObject _researchButton = new UIObject("gui/research-button", "research-button", bWidth, bWidth );
-		_researchButton.setPosition(new Vector2(Screen.width / 2 - bWidth -10,-95));
+		_researchButton.setPosition(new Vector2(Screen.width/2 - bWidth - 15,-95));
 		researchButton = UI.attach(_researchButton);
 
 		
@@ -67,10 +67,10 @@ public class UnitBar : MonoBehaviour {
 
 			float dest = 0f;
 			if ( hideButtons ) {
-				dest = (Screen.height / 2 - 75/2)*-1 - 120;
+				dest = -120;
 
 			} else {
-				dest = (Screen.height / 2 - 75/2)*-1 + 15;
+				dest = 50;
 			}
 			Vector3 rPos = new Vector3(researchButton.transform.position.x, dest, 1 );
 			StartCoroutine(Transition(researchButton, rPos));

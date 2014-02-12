@@ -22,7 +22,8 @@ public class UI : MonoBehaviour {
 
 
 		Vector3 correctedPosition 
-			= new Vector3( realPositionX + userPosition.x,  realPositionY + userPosition.y, 1);
+			= new Vector3( userPosition.x,  userPosition.y, 1);
+		Debug.Log(correctedPosition);
 		
 		GameObject inst 
 			= Instantiate(Resources.Load(o.getResourceName()), correctedPosition, Quaternion.identity) as GameObject;
@@ -66,5 +67,8 @@ public class UI : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		this.camera.orthographicSize  = Screen.height / 2;
+		this.camera.transform.position = new Vector3(Screen.width / 2, Screen.height /2 );
+		//GuiGroup.transform.localScale = new Vector3(Screen.width, Screen.height, 1);
+		GuiGroup.transform.position = new Vector3(Screen.width/2, Screen.height/2, 1);
 	}
 }
