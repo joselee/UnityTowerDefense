@@ -9,7 +9,7 @@ public class UserInput : MonoBehaviour
 	private Vector3 hitPosition = Vector3.zero;
 	private Vector3 cameraStartPosition = Vector3.zero;
 	private Vector3 cameraMovePosition = Vector3.zero;
-	private float defaultCameraY = 400;
+	private float defaultCameraY = 50;
 
 	private Vector3 collisionDirection = Vector3.zero;
 	private Vector3 lastCameraPosition = Vector3.zero;
