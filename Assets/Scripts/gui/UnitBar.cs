@@ -12,14 +12,13 @@ public class UnitBar : MonoBehaviour {
 
 
 	// Movement speed in units/sec.
-	private static float speed = 1.0f;
+	private static float speed = 20.0f;
 	
 	// Time when the movement started.
 	private static float startTime;
+	private static float destinationPosition;
+	private static float destinationSpeed;
 	
-	// Total distance between the markers.
-	private static float journeyLengthResearch;
-	private static float journeyLengthBuild;
 
 	private static bool move = false;
 	
@@ -44,24 +43,18 @@ public class UnitBar : MonoBehaviour {
 		bButton.setPosition(new Vector2(Screen.width / 2,-95));
 		buildButton = UI.attach(bButton);
 
-		journeyLengthResearch =  Vector3.Distance(researchButton.transform.position,
-			 new Vector3(researchButton.transform.position.x, 15, 1) );
-
-		journeyLengthBuild =  Vector3.Distance(buildButton.transform.position,
-			 new Vector3(buildButton.transform.position.x, 15, 1) );
-		
 		startTime = Time.time;
 		// Calculate the journey length.
+		destinationPosition = 50;
+		destinationSpeed = 10;
 		move = true;
-		
-
-		hideButtons = false;
 	}
 	
 	public static void hide()
 	{
-		hideButtons = true;
-		
+		destinationPosition = -95;
+		destinationSpeed = 100;
+		move = true;
 	}
 	
 	
@@ -75,11 +68,26 @@ public class UnitBar : MonoBehaviour {
 	void Update () {
 		
 		
-		if (UnitBar.researchButton != null && UnitBar.buildButton != null) {
-			if ( move ){
+		if (UnitBar.researchButton != null && UnitBar.buildButton != null && move == true) {
+			Debug.Log(destinationPosition);
 
-			}
+			float distCovered = (Time.time - startTime) * speed;
+			float fracJourney = distCovered/destinationSpeed;
+		
+			Vector3 destinationResearch = new Vector3(researchButton.transform.position.x, destinationPosition, 1);
+			Vector3 destinationBuild = new Vector3(buildButton.transform.position.x, destinationPosition, 1);
+
+			
+			researchButton.transform.position 
+				= Vector3.Lerp(researchButton.transform.position,destinationResearch, fracJourney);
+
+			buildButton.transform.position 
+				= Vector3.Lerp(buildButton.transform.position,  destinationBuild, fracJourney);
+			//if ( destinationResearch == researchButton.transform.position ){
+		//		move = false;
+		//	}
 		}
+		
 	}
 }
 
