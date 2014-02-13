@@ -7,6 +7,21 @@ public class UnitBar : MonoBehaviour {
 	private static GameObject buildButton;
 	public static bool hideButtons = false;
 	public static bool inited = false;
+
+
+
+
+	// Movement speed in units/sec.
+	private float speed = 1.0;
+	
+	// Time when the movement started.
+	private float startTime;
+	
+	// Total distance between the markers.
+	private float journeyLengthResearch;
+	private float journeyLengthBuild;
+
+	private bool move = false;
 	
 	public static void show()
 	{
@@ -28,7 +43,18 @@ public class UnitBar : MonoBehaviour {
 		UIObject bButton = new UIObject("gui/build-button", "build-button", bWidth, bWidth );
 		bButton.setPosition(new Vector2(Screen.width / 2,-95));
 		buildButton = UI.attach(bButton);
+
+		journeyLengthResearch = new Vector3.Distance(researchButton.position,
+			 new Vector3(researchButton.transform.position.x, 15, 1) );
+
+		journeyLengthBuild = new Vector3.Distance(buildButton.position,
+			 new Vector3(buildButton.transform.position.x, 15, 1) );
 		
+		startTime = Time.time;
+		// Calculate the journey length.
+		move = true;
+		
+
 		hideButtons = false;
 	}
 	
@@ -36,20 +62,6 @@ public class UnitBar : MonoBehaviour {
 	{
 		hideButtons = true;
 		
-	}
-	public float transitionDuration = 2.5f;
-	
-	
-	IEnumerator Transition(GameObject o, Vector3 target)
-	{
-		float t = 0.0f;
-		Vector3 startingPos = o.transform.position;
-		while (t < 0.2f && o != null)
-		{
-			t += Time.deltaTime * (Time.timeScale*8);
-			o.transform.position = Vector3.Lerp(startingPos, target, t);
-			yield return 0;
-		}
 	}
 	
 	
@@ -64,19 +76,9 @@ public class UnitBar : MonoBehaviour {
 		
 		
 		if (UnitBar.researchButton != null && UnitBar.buildButton != null) {
-			
-			float dest = 0f;
-			if ( hideButtons ) {
-				dest = -120;
-				
-			} else {
-				dest = 50;
+			if ( move ){
+
 			}
-			Vector3 rPos = new Vector3(researchButton.transform.position.x, dest, 1 );
-			StartCoroutine(Transition(researchButton, rPos));
-			
-			Vector3 bPos = new Vector3(buildButton.transform.position.x, dest, 1 );
-			StartCoroutine(Transition(buildButton, bPos));
 		}
 	}
 }
