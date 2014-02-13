@@ -69,7 +69,7 @@ public class UnitBar : MonoBehaviour {
 		
 		
 		if (UnitBar.researchButton != null && UnitBar.buildButton != null && move == true) {
-			Debug.Log(destinationPosition);
+			
 
 			float distCovered = (Time.time - startTime) * speed;
 			float fracJourney = distCovered/destinationSpeed;
@@ -83,9 +83,9 @@ public class UnitBar : MonoBehaviour {
 
 			buildButton.transform.position 
 				= Vector3.Lerp(buildButton.transform.position,  destinationBuild, fracJourney);
-			//if ( destinationResearch == researchButton.transform.position ){
-		//		move = false;
-		//	}
+			if ( destinationResearch == researchButton.transform.position ){
+				move = false;
+			}
 		}
 		
 	}
