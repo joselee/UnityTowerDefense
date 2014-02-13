@@ -12,16 +12,16 @@ public class UnitBar : MonoBehaviour {
 
 
 	// Movement speed in units/sec.
-	private float speed = 1.0;
+	private static float speed = 1.0f;
 	
 	// Time when the movement started.
-	private float startTime;
+	private static float startTime;
 	
 	// Total distance between the markers.
-	private float journeyLengthResearch;
-	private float journeyLengthBuild;
+	private static float journeyLengthResearch;
+	private static float journeyLengthBuild;
 
-	private bool move = false;
+	private static bool move = false;
 	
 	public static void show()
 	{
@@ -44,10 +44,10 @@ public class UnitBar : MonoBehaviour {
 		bButton.setPosition(new Vector2(Screen.width / 2,-95));
 		buildButton = UI.attach(bButton);
 
-		journeyLengthResearch = new Vector3.Distance(researchButton.position,
+		journeyLengthResearch =  Vector3.Distance(researchButton.transform.position,
 			 new Vector3(researchButton.transform.position.x, 15, 1) );
 
-		journeyLengthBuild = new Vector3.Distance(buildButton.position,
+		journeyLengthBuild =  Vector3.Distance(buildButton.transform.position,
 			 new Vector3(buildButton.transform.position.x, 15, 1) );
 		
 		startTime = Time.time;
