@@ -8,6 +8,9 @@ public class UnitBar : MonoBehaviour {
 	public static bool hideButtons = false;
 	public static bool inited = false;
 
+	public Material ReseachMaterial;
+	public Material BuildMaterial;
+
 
 
 
@@ -35,12 +38,12 @@ public class UnitBar : MonoBehaviour {
 		
 		int bWidth = 75;
 		UIObject _researchButton = new UIObject("gui/research-button", "research-button", bWidth, bWidth );
-		_researchButton.setPosition(new Vector2(Screen.width/2 - bWidth - 15,-95));
+		_researchButton.setPosition(new Vector2(Screen.width/2 - bWidth/2,-95));
 		researchButton = UI.attach(_researchButton);
 		
 		
 		UIObject bButton = new UIObject("gui/build-button", "build-button", bWidth, bWidth );
-		bButton.setPosition(new Vector2(Screen.width / 2,-95));
+		bButton.setPosition(new Vector2(Screen.width / 2 + bWidth/2,-95));
 		buildButton = UI.attach(bButton);
 
 		startTime = Time.time;
@@ -77,6 +80,10 @@ public class UnitBar : MonoBehaviour {
 			Vector3 destinationResearch = new Vector3(researchButton.transform.position.x, destinationPosition, 1);
 			Vector3 destinationBuild = new Vector3(buildButton.transform.position.x, destinationPosition, 1);
 
+
+			//float coveredInPerc = (buildButton.transform.position.y / destinationPosition + 100) * 100;
+			//Debug.Log(distCovered + "->" + destinationPosition);
+			//ReseachMaterial.SetFloat("_Alpha",0.3f);
 			
 			researchButton.transform.position 
 				= Vector3.Lerp(researchButton.transform.position,destinationResearch, fracJourney);
