@@ -5,7 +5,7 @@ public class UnitBar : MonoBehaviour {
 	
 	private static GameObject researchButton;
 	private static GameObject buildButton;
-	public static bool hideButtons = false;
+	
 	public static bool inited = false;
 
 	public Material ReseachMaterial;
@@ -24,6 +24,8 @@ public class UnitBar : MonoBehaviour {
 	
 
 	private static bool move = false;
+	private static bool hideButtons = false;
+	private static float opacity = 0.0f;
 	
 	public static void show()
 	{
@@ -50,7 +52,9 @@ public class UnitBar : MonoBehaviour {
 		// Calculate the journey length.
 		destinationPosition = 50;
 		destinationSpeed = 10;
+		opacity=0;
 		move = true;
+		hideButtons = false;
 	}
 	
 	public static void hide()
@@ -58,6 +62,8 @@ public class UnitBar : MonoBehaviour {
 		destinationPosition = -95;
 		destinationSpeed = 100;
 		move = true;
+		hideButtons = true;
+		opacity = 1;
 	}
 	
 	
@@ -80,17 +86,28 @@ public class UnitBar : MonoBehaviour {
 			Vector3 destinationResearch = new Vector3(researchButton.transform.position.x, destinationPosition, 1);
 			Vector3 destinationBuild = new Vector3(buildButton.transform.position.x, destinationPosition, 1);
 
-
-			//float coveredInPerc = (buildButton.transform.position.y / destinationPosition + 100) * 100;
-			//Debug.Log(distCovered + "->" + destinationPosition);
-			//ReseachMaterial.SetFloat("_Alpha",0.3f);
+			if ( hideButtons ){
+				opacity = opacity - 0.2f;
+				if ( opacity < 0){
+					opacity = 0;
+				}
+			} else {
+				opacity = opacity + 0.04f;
+				if ( opacity > 1){
+					opacity = 1;
+				}
+			}
+			
+			researchButton.renderer.materials[0].SetFloat("_Alpha",opacity);
+			buildButton.renderer.materials[0].SetFloat("_Alpha",opacity);
 			
 			researchButton.transform.position 
 				= Vector3.Lerp(researchButton.transform.position,destinationResearch, fracJourney);
 
 			buildButton.transform.position 
-				= Vector3.Lerp(buildButton.transform.position,  destinationBuild, fracJourney);
+				=  Vector3.Lerp(buildButton.transform.position,  destinationBuild, fracJourney);
 			if ( destinationResearch == researchButton.transform.position ){
+				opacity = 1;
 				move = false;
 			}
 		}
