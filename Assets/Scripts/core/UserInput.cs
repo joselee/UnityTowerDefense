@@ -11,11 +11,10 @@ public class UserInput : MonoBehaviour
 	private Vector3 cameraMovePosition = Vector3.zero;
 	public float defaultCameraY = 100;
 
-	private Vector3 collisionDirection = Vector3.zero;
-	private Vector3 lastCameraPosition = Vector3.zero;
-	private Vector3 cameraVelocity = Vector3.zero;
-	private bool smoothToStop = false;
-	public float momentum = 9.0f;
+	private Vector3 lastCameraPosition = Vector3.zero; // Used to calculate camera velocity
+	private Vector3 cameraVelocity = Vector3.zero; // Used to smoothly decelerate camera
+	private bool smoothToStop = false; // Flag that tells whether the camera should decelerate or not
+	public float momentum = 9.0f; // Determines how long it takes for the camera to stop
 
 	private float deadZoneThreshold = 30f;
 	private bool withinDeadZone = true;
@@ -75,13 +74,17 @@ public class UserInput : MonoBehaviour
 			smoothToStop = false;
 		}
 
-		if (userFingerPressed )
+		if (userFingerPressed && !withinDeadZone)
 		{
 			cameraVelocity = Vector3.zero;
 			smoothToStop = false;
 
 			// Our camera is rotated 90degrees on the X axis.. so Z axis and Y axis are inverted.
 			pointerPosition.z = hitPosition.z = deadZoneLeavePosition.z = cameraStartPosition.y;
+
+			// Add the offset of the deadZone, so that the camera doesn't suddenly jump 30f when it starts moving.
+			Vector3 deadZoneOffset = deadZoneLeavePosition - hitPosition;
+			hitPosition += deadZoneOffset;
 
 			// Calculating camera shift
 			Vector3 direction = Camera.main.ScreenToWorldPoint (pointerPosition) - Camera.main.ScreenToWorldPoint (hitPosition);
@@ -157,7 +160,7 @@ public class UserInput : MonoBehaviour
 			}
 
 			// Once we leave the deadzone, we don't check this anymore until the next touch/mouse down.
-			if(userFingerPressed )
+			if(userFingerPressed && withinDeadZone)
 			{
 				float draggedDistance = Vector3.Distance(latestFingerDownPosition, pointerPosition);
 				if(draggedDistance > deadZoneThreshold)
